@@ -17,5 +17,5 @@ Other than a [Julia installation](https://julialang.org/downloads/), no external
 
 ### Example results:
 
-![Figure 1](paperv2/figures/01example.png)
+![Figure 1](paper/figures/02nzcovid.png)
 
