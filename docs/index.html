@@ -220,55 +220,46 @@ window.Quarto = {
 
 
 <p>We provide simple Julia implementations of two popular methods for reproduction number estimation: EpiEstim <span class="citation" data-cites="coriNewFrameworkSoftware2013">(<a href="#ref-coriNewFrameworkSoftware2013" role="doc-biblioref">Cori et al. 2013</a>)</span> and EpiFilter <span class="citation" data-cites="paragImprovedEstimationTimevarying2021">(<a href="#ref-paragImprovedEstimationTimevarying2021" role="doc-biblioref">Parag 2021</a>)</span>. In addition to the original methods, we also provide functions for calculating model likelihoods and marginalising out uncertainty about model parameters from final estimates of <span class="math inline">\(R_t\)</span>.</p>
-<div id="4aafef75" class="cell" data-execution_count="1">
+<p>These scripts were developed as part of <em><a href="link.link">Robust uncertainty quantification in popular estimators of the instantaneous reproduction number</a></em>. All technical details can be found in this paper and the corresponding supplementary material.</p>
+<div id="caf74d81" class="cell" data-fig-label="fig-example" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span></span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">Measures</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> rootdir <span class="op">=</span> <span class="pp">@__DIR__</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span>(<span class="fu">joinpath</span>(rootdir, <span class="st">".."</span>))</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(rootdir)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"src/EpiEstim.jl"</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"src/support.jl"</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="fl">7</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>(Ct, w) <span class="op">=</span> <span class="fu">loadData</span>(<span class="st">"NZCOVID"</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>pR <span class="op">=</span> <span class="fu">EpiEstim</span>(k, w, Ct)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure we are working in the root directory</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> rootdir <span class="op">=</span> <span class="pp">@__DIR__</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span>(<span class="fu">joinpath</span>(rootdir, <span class="st">".."</span>))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Load scripts</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"src/EpiEstim.jl"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"src/support.jl"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Set k parameter and load data</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="fl">7</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>(Ct, w) <span class="op">=</span> <span class="fu">loadData</span>(<span class="st">"NZCOVID"</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>dates <span class="op">=</span> <span class="fu">Date</span>(<span class="st">"2020-02-26"</span>) <span class="op">+</span> <span class="fu">Day</span>.(<span class="fl">0</span><span class="op">:</span><span class="fl">99</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the model and extract mean and credible intervals</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>pR <span class="op">=</span> <span class="fu">EpiEstim</span>(k, w, Ct)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> <span class="fu">mean</span>.(pR)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>l <span class="op">=</span> <span class="fu">quantile</span>.(pR, <span class="fl">0.025</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> <span class="fu">quantile</span>.(pR, <span class="fl">0.975</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>plot_cases <span class="op">=</span> <span class="fu">bar</span>(dates, Ct, xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Reported cases"</span>, label<span class="op">=</span><span class="cn">false</span>, size<span class="op">=</span>(<span class="fl">800</span>, <span class="fl">400</span>), margins<span class="op">=</span><span class="fl">3</span>mm, color<span class="op">=</span><span class="st">"#f25a2a"</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>plot_Rt <span class="op">=</span> <span class="fu">plot</span>(dates, m, ribbon<span class="op">=</span>(m<span class="op">-</span>l,u<span class="op">-</span>m), label<span class="op">=</span><span class="cn">false</span>, xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">400</span>), margins<span class="op">=</span><span class="fl">3</span>mm, color<span class="op">=</span><span class="st">"#13643f"</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="fu">hline!</span>(plot_Rt, [<span class="fl">1</span>], label<span class="op">=</span><span class="cn">false</span>, color<span class="op">=:</span>black, linestyle<span class="op">=:</span>dash)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(plot_cases, plot_Rt, layout<span class="op">=</span>(<span class="fl">2</span>,<span class="fl">1</span>), size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">600</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>/Users/nicsteyn/Documents/EpiFilter Fitting/EpiFilterFittingPublic/site</code></pre>
-</div>
 <div class="cell-output cell-output-display" data-execution_count="2">
-<pre><code>100-element Vector{Gamma{Float64}}:
- Gamma{Float64}(α=1.0, θ=5.0)
- Gamma{Float64}(α=2.0, θ=0.8333333333333334)
- Gamma{Float64}(α=2.0, θ=0.5429368594220704)
- Gamma{Float64}(α=2.0, θ=0.4388195170228974)
- Gamma{Float64}(α=2.0, θ=0.38622793739176425)
- Gamma{Float64}(α=3.0, θ=0.35518353467892516)
- Gamma{Float64}(α=3.0, θ=0.32543037936152736)
- Gamma{Float64}(α=4.0, θ=0.29949263358561207)
- Gamma{Float64}(α=6.0, θ=0.3664142758225736)
- Gamma{Float64}(α=7.0, θ=0.3741095068904273)
- Gamma{Float64}(α=7.0, θ=0.33607091623751784)
- Gamma{Float64}(α=7.0, θ=0.28992337194673923)
- Gamma{Float64}(α=6.0, θ=0.25173997453377556)
- ⋮
- Gamma{Float64}(α=2.0, θ=0.266672839122578)
- Gamma{Float64}(α=2.0, θ=0.3100524764804513)
- Gamma{Float64}(α=2.0, θ=0.35833769487923756)
- Gamma{Float64}(α=2.0, θ=0.41027108018392805)
- Gamma{Float64}(α=2.0, θ=0.4641049376969411)
- Gamma{Float64}(α=1.0, θ=0.517791523294288)
- Gamma{Float64}(α=1.0, θ=0.5867909558162033)
- Gamma{Float64}(α=1.0, θ=0.6780082301722066)
- Gamma{Float64}(α=1.0, θ=0.7953795415075722)
- Gamma{Float64}(α=1.0, θ=0.9426289614944003)
- Gamma{Float64}(α=1.0, θ=1.1231860505535867)
- Gamma{Float64}(α=1.0, θ=1.3395366526917285)</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-2-output-1.svg" class="img-fluid figure-img"></p>
+<figcaption>Reported cases from the first 100 days of the COVID-19 pandemic in Aotearoa New Zealand (upper) and the estimated reproduction number using EpiEstim with a default smoothing value of k = 7 (lower). Data were obtained from the <a href="https://github.com/minhealthnz/nz-covid-data">Ministry of Health</a>.</figcaption>
+</figure>
 </div>
 </div>
-<p>These scripts were developed as part of <em><a href="link.link">Robust uncertainty quantification in popular estimators of the instantaneous reproduction number</a></em>.</p>
+</div>
 <p>Other than a <a href="https://julialang.org">Julia installation</a>, no external software is required to run this code. All functions are provided in the <code>/src/</code> directory of the <a href="https://github.com/nicsteyn2/RobustRtEstimators">GitHub repository</a>.</p>
 
 
