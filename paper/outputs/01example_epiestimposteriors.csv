@@ -1,0 +1,91 @@
+k,p,simulation,model
+1,1.3449227033766055e-69,Random walk,EpiEstim
+2,0.6449407359774881,Random walk,EpiEstim
+3,0.35499029284857414,Random walk,EpiEstim
+4,6.897117291031285e-5,Random walk,EpiEstim
+5,1.0274882779954059e-12,Random walk,EpiEstim
+6,1.3393725481972627e-18,Random walk,EpiEstim
+7,2.190727931127783e-24,Random walk,EpiEstim
+8,1.2158404751058591e-28,Random walk,EpiEstim
+9,6.262600251992116e-32,Random walk,EpiEstim
+10,2.2964550487530522e-37,Random walk,EpiEstim
+11,4.840557966664178e-40,Random walk,EpiEstim
+12,5.327932971477355e-42,Random walk,EpiEstim
+13,8.594404238489684e-45,Random walk,EpiEstim
+14,4.0240177241970256e-46,Random walk,EpiEstim
+15,9.926835537462389e-49,Random walk,EpiEstim
+16,5.803460069927456e-52,Random walk,EpiEstim
+17,6.914730392858257e-56,Random walk,EpiEstim
+18,2.5936451339061686e-60,Random walk,EpiEstim
+19,1.6650740850588291e-65,Random walk,EpiEstim
+20,1.22712812170165e-70,Random walk,EpiEstim
+21,4.090628314607978e-75,Random walk,EpiEstim
+22,2.2939148730588662e-80,Random walk,EpiEstim
+23,4.8479563644829447e-85,Random walk,EpiEstim
+24,1.0723411975121286e-89,Random walk,EpiEstim
+25,5.118071099505119e-94,Random walk,EpiEstim
+26,2.7599245715510705e-98,Random walk,EpiEstim
+27,2.9722966910563095e-103,Random walk,EpiEstim
+28,3.882962885843018e-108,Random walk,EpiEstim
+29,2.319086939609728e-112,Random walk,EpiEstim
+30,4.835150520908677e-117,Random walk,EpiEstim
+1,8.406983032408064e-82,Sinusoidal,EpiEstim
+2,1.0,Sinusoidal,EpiEstim
+3,6.367020327237073e-20,Sinusoidal,EpiEstim
+4,1.6091523422271786e-55,Sinusoidal,EpiEstim
+5,1.8200933963429922e-97,Sinusoidal,EpiEstim
+6,5.736669862385866e-146,Sinusoidal,EpiEstim
+7,5.79295966326737e-198,Sinusoidal,EpiEstim
+8,1.4750858010837445e-248,Sinusoidal,EpiEstim
+9,1.7872161752789207e-296,Sinusoidal,EpiEstim
+10,0.0,Sinusoidal,EpiEstim
+11,0.0,Sinusoidal,EpiEstim
+12,0.0,Sinusoidal,EpiEstim
+13,0.0,Sinusoidal,EpiEstim
+14,0.0,Sinusoidal,EpiEstim
+15,0.0,Sinusoidal,EpiEstim
+16,0.0,Sinusoidal,EpiEstim
+17,0.0,Sinusoidal,EpiEstim
+18,0.0,Sinusoidal,EpiEstim
+19,0.0,Sinusoidal,EpiEstim
+20,0.0,Sinusoidal,EpiEstim
+21,3.0977497795522754e-304,Sinusoidal,EpiEstim
+22,5.191032386821256e-281,Sinusoidal,EpiEstim
+23,5.644420512872795e-262,Sinusoidal,EpiEstim
+24,3.9254449828199096e-248,Sinusoidal,EpiEstim
+25,4.868226068162512e-239,Sinusoidal,EpiEstim
+26,1.8995119527761627e-235,Sinusoidal,EpiEstim
+27,1.0339300338176222e-236,Sinusoidal,EpiEstim
+28,1.2759612680071984e-242,Sinusoidal,EpiEstim
+29,1.0455267911417915e-251,Sinusoidal,EpiEstim
+30,5.763232904546916e-263,Sinusoidal,EpiEstim
+1,1.0557849116843797e-71,Step change,EpiEstim
+2,0.9964039523941022,Step change,EpiEstim
+3,0.003595878320972983,Step change,EpiEstim
+4,1.69284907165346e-7,Step change,EpiEstim
+5,1.761253437027703e-14,Step change,EpiEstim
+6,6.871966914385374e-23,Step change,EpiEstim
+7,2.3196410352639137e-30,Step change,EpiEstim
+8,1.7172083289752093e-37,Step change,EpiEstim
+9,3.381168708716162e-46,Step change,EpiEstim
+10,2.8930653614214496e-54,Step change,EpiEstim
+11,9.949484321950578e-62,Step change,EpiEstim
+12,2.768732153509433e-70,Step change,EpiEstim
+13,5.630113842903032e-78,Step change,EpiEstim
+14,1.982157794742848e-85,Step change,EpiEstim
+15,1.6234199181318943e-92,Step change,EpiEstim
+16,4.750735141906538e-99,Step change,EpiEstim
+17,1.1805007402053454e-105,Step change,EpiEstim
+18,3.998499909382497e-113,Step change,EpiEstim
+19,3.0980150749032135e-120,Step change,EpiEstim
+20,1.1744573840238237e-126,Step change,EpiEstim
+21,1.666108410897662e-133,Step change,EpiEstim
+22,2.1690024997848437e-140,Step change,EpiEstim
+23,1.253485616560759e-146,Step change,EpiEstim
+24,3.238715701838066e-153,Step change,EpiEstim
+25,1.1255799898529571e-159,Step change,EpiEstim
+26,5.529169371463946e-166,Step change,EpiEstim
+27,4.0282818609162135e-172,Step change,EpiEstim
+28,8.921013184895331e-178,Step change,EpiEstim
+29,3.462712719388669e-183,Step change,EpiEstim
+30,1.434834034963093e-187,Step change,EpiEstim

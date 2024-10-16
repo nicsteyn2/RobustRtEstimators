@@ -1,0 +1,91 @@
+k,p,simulation,model
+1,1.562927996327712e-36,Random walk,EpiEstim
+2,0.9985150874859742,Random walk,EpiEstim
+3,0.0014848822166695754,Random walk,EpiEstim
+4,1.5621109061843703e-9,Random walk,EpiEstim
+5,1.72675705583138e-9,Random walk,EpiEstim
+6,2.7007468586919398e-8,Random walk,EpiEstim
+7,1.019869019951076e-12,Random walk,EpiEstim
+8,2.7615949835065753e-18,Random walk,EpiEstim
+9,7.154855552978807e-21,Random walk,EpiEstim
+10,1.0505889567680519e-24,Random walk,EpiEstim
+11,3.3715441739995756e-26,Random walk,EpiEstim
+12,1.3785904066237515e-29,Random walk,EpiEstim
+13,4.835925346468676e-31,Random walk,EpiEstim
+14,2.9501570445283616e-33,Random walk,EpiEstim
+15,3.242427070301831e-36,Random walk,EpiEstim
+16,1.4416720904554324e-39,Random walk,EpiEstim
+17,4.599222859232941e-43,Random walk,EpiEstim
+18,1.3363618436301265e-47,Random walk,EpiEstim
+19,2.239749557923214e-51,Random walk,EpiEstim
+20,3.553072652076633e-56,Random walk,EpiEstim
+21,9.351555877942236e-61,Random walk,EpiEstim
+22,6.572246078977438e-66,Random walk,EpiEstim
+23,1.131775712245406e-69,Random walk,EpiEstim
+24,3.1373198897242583e-74,Random walk,EpiEstim
+25,9.376209872254396e-78,Random walk,EpiEstim
+26,6.236849414345659e-82,Random walk,EpiEstim
+27,1.6414113970422966e-86,Random walk,EpiEstim
+28,6.176051282596613e-91,Random walk,EpiEstim
+29,2.9773234511161876e-94,Random walk,EpiEstim
+30,1.5172587524814262e-98,Random walk,EpiEstim
+1,6.4455594478286e-37,Sinusoidal,EpiEstim
+2,0.999999999113431,Sinusoidal,EpiEstim
+3,8.865689754206339e-10,Sinusoidal,EpiEstim
+4,2.6191851151071954e-33,Sinusoidal,EpiEstim
+5,4.994130218821104e-66,Sinusoidal,EpiEstim
+6,5.128990557207661e-102,Sinusoidal,EpiEstim
+7,2.746513762687975e-141,Sinusoidal,EpiEstim
+8,4.0421255705475227e-178,Sinusoidal,EpiEstim
+9,5.69397808841824e-215,Sinusoidal,EpiEstim
+10,3.936221891325382e-248,Sinusoidal,EpiEstim
+11,1.1296060329403914e-276,Sinusoidal,EpiEstim
+12,7.919304445634764e-295,Sinusoidal,EpiEstim
+13,3.747369217145155e-309,Sinusoidal,EpiEstim
+14,3.524537985e-315,Sinusoidal,EpiEstim
+15,1.141777508495e-312,Sinusoidal,EpiEstim
+16,1.559503352485485e-303,Sinusoidal,EpiEstim
+17,1.1640711073717576e-291,Sinusoidal,EpiEstim
+18,8.33095351540543e-276,Sinusoidal,EpiEstim
+19,1.4546056123562142e-257,Sinusoidal,EpiEstim
+20,1.200707038784447e-238,Sinusoidal,EpiEstim
+21,4.6086768763606095e-220,Sinusoidal,EpiEstim
+22,6.631730222608684e-203,Sinusoidal,EpiEstim
+23,1.483795489701804e-188,Sinusoidal,EpiEstim
+24,4.181633510066402e-179,Sinusoidal,EpiEstim
+25,2.0514616671915226e-173,Sinusoidal,EpiEstim
+26,1.1686525717985774e-170,Sinusoidal,EpiEstim
+27,1.848804075931813e-172,Sinusoidal,EpiEstim
+28,2.4741659316011424e-177,Sinusoidal,EpiEstim
+29,2.9446837022082017e-184,Sinusoidal,EpiEstim
+30,1.1404865870262878e-193,Sinusoidal,EpiEstim
+1,1.4777356261399326e-48,Step change,EpiEstim
+2,0.9999999999479052,Step change,EpiEstim
+3,5.209484601320748e-11,Step change,EpiEstim
+4,3.8379256881366536e-22,Step change,EpiEstim
+5,1.0071249526906037e-25,Step change,EpiEstim
+6,1.78275964374387e-27,Step change,EpiEstim
+7,1.031629813210731e-31,Step change,EpiEstim
+8,7.63855221065149e-38,Step change,EpiEstim
+9,1.3164123753463984e-44,Step change,EpiEstim
+10,8.734600232478432e-51,Step change,EpiEstim
+11,9.516773849091449e-57,Step change,EpiEstim
+12,4.0976016895100003e-63,Step change,EpiEstim
+13,7.304477615780457e-69,Step change,EpiEstim
+14,9.252948315873847e-76,Step change,EpiEstim
+15,4.5461932215925575e-82,Step change,EpiEstim
+16,5.743756992229419e-89,Step change,EpiEstim
+17,2.4556570903864615e-96,Step change,EpiEstim
+18,6.279405189227869e-103,Step change,EpiEstim
+19,3.0230746252955726e-109,Step change,EpiEstim
+20,1.9826001922250378e-115,Step change,EpiEstim
+21,3.5378744139232517e-122,Step change,EpiEstim
+22,5.6877779264743435e-129,Step change,EpiEstim
+23,1.6881646098197838e-134,Step change,EpiEstim
+24,1.8162693174521274e-140,Step change,EpiEstim
+25,5.129965530262707e-146,Step change,EpiEstim
+26,4.0845314795530455e-152,Step change,EpiEstim
+27,1.927195490102665e-157,Step change,EpiEstim
+28,6.356291740513519e-163,Step change,EpiEstim
+29,1.5616561064860547e-167,Step change,EpiEstim
+30,9.033989492964205e-171,Step change,EpiEstim
