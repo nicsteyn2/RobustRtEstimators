@@ -25,9 +25,9 @@ periodc_st = as.Date("2021-11-13")
 periodc_en = as.Date("2021-12-01")
 
 # Load the data
-df = read.csv("paperv2/outputs/02nzcovid.csv")
-df_eepost = read.csv("paperv2/outputs/02nzcovid_epiestimposteriors.csv")
-df_efpost = read.csv("paperv2/outputs/02nzcovid_epifilterposteriors.csv")
+df = read.csv("paper/outputs/02nzcovid.csv")
+df_eepost = read.csv("paper/outputs/02nzcovid_epiestimposteriors.csv")
+df_efpost = read.csv("paper/outputs/02nzcovid_epifilterposteriors.csv")
 
 # Clean the data
 df$fit = ifelse(grepl("Conditional", df$fit), "Default", df$fit)
@@ -191,9 +191,10 @@ plt2 = plot_grid(plot_grid(plt_data_rw, plt_param_rw, ncol=1, rel_heights=c(1, 0
                  legend,
                  NULL,
                  ncol=3,
-                 rel_heights=c(0.7,0.5,0.05)) 
+                 rel_heights=c(0.7,0.5,0.05),
+                 labels=c("A)", "B)", "C)", "D)", "E)", "F)")) 
 plt2
-ggsave(paste0("paperv2/figures/02nzcovid.png"), plt2, dpi=300, width=25, height=14, units="cm")
+ggsave(paste0("paper/figures/02nzcovid.png"), plt2, dpi=300, width=25, height=14, units="cm")
 
 
 # Fetch numbers for table

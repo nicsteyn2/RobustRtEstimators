@@ -16,9 +16,9 @@ custom_theme <- theme_bw() +
   )
 
 # Load the data
-df = read.csv("paperv2/outputs/01example_estimates.csv")
-df_eepost = read.csv("paperv2/outputs/01example_epiestimposteriors.csv")
-df_efpost = read.csv("paperv2/outputs/01example_epifilterposteriors.csv")
+df = read.csv("paper/outputs/01example_estimates.csv")
+df_eepost = read.csv("paper/outputs/01example_epiestimposteriors.csv")
+df_efpost = read.csv("paper/outputs/01example_epifilterposteriors.csv")
 
 # Clean the data
 df$fit = ifelse(grepl("Conditional", df$fit), "Default", df$fit)
@@ -175,7 +175,7 @@ plt_param_rw_ef = ggplot(df_efpost %>% filter(simulation=="Random walk")) +
 plt_param_rw_ee = ggplot(df_eepost %>% filter(simulation=="Random walk")) +
   geom_col(aes(x=k, y=p), fill="#006666") +
   custom_theme +
-  xlab("k") + ylab("Posterior density") +
+  xlab("k") + ylab("Posterior\ndensity") +
   scale_x_continuous(breaks=seq(1,10), labels=seq(1,10), limits=c(1,10)) +
   geom_vline(xintercept=7, color="black", linetype="dotted")
 
@@ -221,9 +221,9 @@ plt = plot_grid(plt_data_rw, plt_data_sinusoidal, plt_data_steps,
                 plt_param_rw, plt_param_sinusoidal, plt_param_steps,
                 plt_post_rw, plt_post_sinusoidal, plt_post_steps,
                 plt_predpost_rw, plt_predpost_sinusoidal, plt_predpost_steps,
-                ncol=3, rel_heights = c(0.35,0.25,0.6,0.6)) 
+                ncol=3, rel_heights = c(0.35,0.28,0.6,0.6), labels=c("A)", "B)", "C)", "D)", "E)", "F)", "G)", "H)", "I)", "J)", "K)", "L)"), label_y=1, label_x=-0.02) 
 plt
-ggsave(paste0("paperv2/figures/01example.png"), plt, dpi=300, width=25, height=21, units="cm")
+ggsave(paste0("paper/figures/01example.png"), plt, dpi=300, width=25, height=21, units="cm")
 
 
 # Get parameter posterior distributions
