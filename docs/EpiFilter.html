@@ -243,7 +243,7 @@ window.Quarto = {
 <section id="setting-up" class="level2">
 <h2 class="anchored" data-anchor-id="setting-up">Setting up</h2>
 <p>First, we need to load the necessary source code and data. We will use data from the 2021 August outbreak of SARS-CoV-2 in Aotearoa New Zealand. The serial interval is assumed to be gamma-distributed with mean 6.5 days and standard deviation 4.2 days <span class="citation" data-cites="paragDecipheringEarlywarningSignals2021 fergusonReportImpactNonpharmaceutical2020">(<a href="#ref-paragDecipheringEarlywarningSignals2021" role="doc-biblioref">Parag, Cowling, and Donnelly 2021</a>; <a href="#ref-fergusonReportImpactNonpharmaceutical2020" role="doc-biblioref">Ferguson et al. 2020</a>)</span>.</p>
-<div id="8c599309" class="cell" data-execution_count="1">
+<div id="44795abf" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">Measures</span> <span class="co"># Load package for plotting</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure we are working in the root directory</span></span>
@@ -261,7 +261,7 @@ window.Quarto = {
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">bar</span>(dates, Ct, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">400</span>), label<span class="op">=</span><span class="cn">false</span>, ylabel<span class="op">=</span><span class="st">"Reported cases"</span>, xlabel<span class="op">=</span><span class="st">"Date"</span>, title<span class="op">=</span><span class="st">"NZ COVID-19 cases (local transmission only)"</span>, margins<span class="op">=</span><span class="fl">3</span>mm, color<span class="op">=</span><span class="st">"#f25a2a"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="33">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="EpiFilter_files/figure-html/cell-2-output-1.svg" class="img-fluid figure-img"></p>
@@ -274,7 +274,7 @@ window.Quarto = {
 <section id="fitting-default-epifilter" class="level2">
 <h2 class="anchored" data-anchor-id="fitting-default-epifilter">Fitting default EpiFilter</h2>
 <p>We can fit the default EpiFilter model (with <span class="math inline">\(\eta = 0.1\)</span>) using the <code>EpiFilter(η, w, Ct)</code> function:</p>
-<div id="1d26403d" class="cell" data-execution_count="2">
+<div id="65dcfd6c" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Rgrid <span class="op">=</span> <span class="fu">LinRange</span>(<span class="fl">0.01</span>, <span class="fl">10</span>, <span class="fl">1000</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>(pRt, _, _) <span class="op">=</span> <span class="fu">EpiFilterForwards</span>(<span class="fl">0.1</span>, w, Ct, Rgrid)</span>
@@ -284,7 +284,7 @@ window.Quarto = {
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot output</span></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>plotR <span class="op">=</span> <span class="fu">plot</span>(dates[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>], m[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>], ribbon<span class="op">=</span>(m[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>]<span class="op">-</span>l[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>], u[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>]<span class="op">-</span>m[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>]), fillalpha<span class="op">=</span><span class="fl">0.3</span>, label<span class="op">=</span><span class="cn">false</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, xlabel<span class="op">=</span><span class="st">"Date"</span>, size<span class="op">=</span>(<span class="fl">600</span>,<span class="fl">300</span>), color<span class="op">=</span><span class="st">"#13643f"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="34">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <div>
 <figure class="figure">
 <p><img src="EpiFilter_files/figure-html/cell-3-output-1.svg" class="img-fluid figure-img"></p>
@@ -297,12 +297,12 @@ window.Quarto = {
 <section id="likelihood-and-posterior-distribution-for-eta" class="level2">
 <h2 class="anchored" data-anchor-id="likelihood-and-posterior-distribution-for-eta">Likelihood and posterior distribution for <span class="math inline">\(\eta\)</span></h2>
 <p>To find the posterior distribution of <span class="math inline">\(\eta\)</span>, we run the model on a grid of values to estimate the likelihood, and normalise with respect to a prior distribution (in this case we use a uniform prior distribution on <span class="math inline">\((0, 1)\)</span>). This takes approximately 1 minute on a 2021 MacBook Pro.</p>
-<div id="11d79ff9" class="cell" data-execution_count="3">
+<div id="33fc60ea" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ηgrid <span class="op">=</span> <span class="fu">LinRange</span>(<span class="fl">0.001</span>, <span class="fl">1</span>, <span class="fl">1000</span>) <span class="co"># The values of η to consider</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>pη<span class="fl">0</span> <span class="op">=</span> <span class="fu">ones</span>(<span class="fu">length</span>(ηgrid))<span class="op">/</span><span class="fu">length</span>(ηgrid) <span class="co"># A uniform prior on η</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>(pη, pRgivenη, pRupgivenη) <span class="op">=</span> <span class="fu">EpiFilterRunAllη</span>(w, Ct, Rgrid, pη<span class="fl">0</span>, ηgrid; windin<span class="op">=</span><span class="fl">3</span>, showProgress<span class="op">=</span><span class="cn">false</span>)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ηgrid, pη[<span class="op">:</span>,<span class="kw">end</span>], label<span class="op">=</span><span class="cn">false</span>, xlabel<span class="op">=</span><span class="st">"η"</span>, ylabel<span class="op">=</span><span class="st">"Posterior probability"</span>, size<span class="op">=</span>(<span class="fl">600</span>,<span class="fl">300</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="35">
+<div class="cell-output cell-output-display" data-execution_count="13">
 <div>
 <figure class="figure">
 <p><img src="EpiFilter_files/figure-html/cell-4-output-1.svg" class="img-fluid figure-img"></p>
@@ -314,11 +314,11 @@ window.Quarto = {
 <section id="marginal-posterior-distribution-for-r_t" class="level2">
 <h2 class="anchored" data-anchor-id="marginal-posterior-distribution-for-r_t">Marginal posterior distribution for <span class="math inline">\(R_t\)</span></h2>
 <p>We already have all the ingredients we need to find the marginal posterior distribution for <span class="math inline">\(R_t\)</span>. We can use the <code>EpiFilterMarginalPosterior()</code> function to do this.</p>
-<div id="4386d749" class="cell" data-execution_count="4">
+<div id="1685442c" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pR <span class="op">=</span> <span class="fu">EpiFilterMarginalPosterior</span>(pη, pRgivenη)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>(m, med, l, u) <span class="op">=</span> <span class="fu">calculateResults</span>(pR, Rgrid)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>plotR <span class="op">=</span> <span class="fu">plot!</span>(plotR, <span class="fl">3</span><span class="op">:</span><span class="fu">length</span>(m), m[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>], ribbon<span class="op">=</span>(m[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>]<span class="op">-</span>l[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>], u[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>]<span class="op">-</span>m[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>]), fillalpha<span class="op">=</span><span class="fl">0.3</span>, label<span class="op">=</span><span class="st">"Marginalised"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, xlabel<span class="op">=</span><span class="st">"Days since 17 August 2021"</span>, size<span class="op">=</span>(<span class="fl">600</span>,<span class="fl">300</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="36">
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>plotR <span class="op">=</span> <span class="fu">plot!</span>(plotR, dates[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>], m[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>], ribbon<span class="op">=</span>(m[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>]<span class="op">-</span>l[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>], u[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>]<span class="op">-</span>m[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>]), fillalpha<span class="op">=</span><span class="fl">0.3</span>, label<span class="op">=</span><span class="st">"Marginalised"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, xlabel<span class="op">=</span><span class="st">"Days since 17 August 2021"</span>, size<span class="op">=</span>(<span class="fl">600</span>,<span class="fl">300</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
 <div>
 <figure class="figure">
 <p><img src="EpiFilter_files/figure-html/cell-5-output-1.svg" class="img-fluid figure-img"></p>
@@ -330,7 +330,7 @@ window.Quarto = {
 <section id="predictive-distributions" class="level2">
 <h2 class="anchored" data-anchor-id="predictive-distributions">Predictive distributions</h2>
 <p>We also have all the ingredients required for the predictive distributions:</p>
-<div id="605dcf8d" class="cell" data-execution_count="5">
+<div id="234cc68f" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Cgrid <span class="op">=</span> <span class="fl">0</span><span class="op">:</span>(<span class="fl">10</span><span class="fu">*maximum</span>(Ct))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Default</span></span>
@@ -347,7 +347,7 @@ window.Quarto = {
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Also show the observed data</span></span>
 <span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter!</span>(plotCases, <span class="fl">1</span><span class="op">:</span><span class="fu">length</span>(Ct), Ct, label<span class="op">=</span><span class="st">"Observed"</span>, color<span class="op">=:</span>black, markersize<span class="op">=</span><span class="fl">1.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="37">
+<div class="cell-output cell-output-display" data-execution_count="15">
 <div>
 <figure class="figure">
 <p><img src="EpiFilter_files/figure-html/cell-6-output-1.svg" class="img-fluid figure-img"></p>
@@ -359,25 +359,25 @@ window.Quarto = {
 <section id="predictive-coverage-and-scoring-rules" class="level2">
 <h2 class="anchored" data-anchor-id="predictive-coverage-and-scoring-rules">Predictive coverage and scoring rules</h2>
 <p>Calculating predictive coverage:</p>
-<div id="dea1a532" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"Predictive coverage of default EpiEstim = </span><span class="sc">$</span>(<span class="fu">round</span>(<span class="fl">100</span><span class="op">*</span>default_coverage))<span class="st">%"</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"Predictive coverage of marginalised EpiEstim = </span><span class="sc">$</span>(<span class="fu">round</span>(<span class="fl">100</span><span class="op">*</span>marginal_coverage))<span class="st">%"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="20fcceff" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"Predictive coverage of default EpiFilter = </span><span class="sc">$</span>(<span class="fu">round</span>(<span class="fl">100</span><span class="op">*</span>default_coverage))<span class="st">%"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"Predictive coverage of marginalised EpiFilter = </span><span class="sc">$</span>(<span class="fu">round</span>(<span class="fl">100</span><span class="op">*</span>marginal_coverage))<span class="st">%"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Predictive coverage of default EpiEstim = 97.0%
-Predictive coverage of marginalised EpiEstim = 98.0%</code></pre>
+<pre><code>Predictive coverage of default EpiFilter = 97.0%
+Predictive coverage of marginalised EpiFilter = 98.0%</code></pre>
 </div>
 </div>
 <p>and the <strong>CRPS</strong> (lower is better) for each model:</p>
-<div id="5d590a52" class="cell" data-execution_count="7">
+<div id="8909085d" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"src/scoringRules.jl"</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>default_crps <span class="op">=</span> <span class="fu">CRPS</span>(<span class="fu">cumsum</span>(pCdefault, dims<span class="op">=</span><span class="fl">1</span>), Cgrid, Ct, windin<span class="op">=</span><span class="fl">3</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>marginalised_crps <span class="op">=</span> <span class="fu">CRPS</span>(<span class="fu">cumsum</span>(pC, dims<span class="op">=</span><span class="fl">1</span>), Cgrid, Ct, windin<span class="op">=</span><span class="fl">3</span>)</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"CRPS of default EpiEstim = </span><span class="sc">$</span>(default_crps)<span class="st">"</span>)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"CRPS of marginalised EpiEstim = </span><span class="sc">$</span>(marginalised_crps)<span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"CRPS of default EpiFilter = </span><span class="sc">$</span>(default_crps)<span class="st">"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"CRPS of marginalised EpiFilter = </span><span class="sc">$</span>(marginalised_crps)<span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>CRPS of default EpiEstim = 6.765280808555216
-CRPS of marginalised EpiEstim = 6.54316604914828</code></pre>
+<pre><code>CRPS of default EpiFilter = 6.765280808555216
+CRPS of marginalised EpiFilter = 6.54316604914828</code></pre>
 </div>
 </div>
 

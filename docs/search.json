@@ -39,7 +39,7 @@
     "href": "EpiFilter.html#marginal-posterior-distribution-for-r_t",
     "title": "EpiFilter",
     "section": "Marginal posterior distribution for \\(R_t\\)",
-    "text": "Marginal posterior distribution for \\(R_t\\)\nWe already have all the ingredients we need to find the marginal posterior distribution for \\(R_t\\). We can use the EpiFilterMarginalPosterior() function to do this.\n\npR = EpiFilterMarginalPosterior(pη, pRgivenη)\n(m, med, l, u) = calculateResults(pR, Rgrid)\nplotR = plot!(plotR, 3:length(m), m[3:end], ribbon=(m[3:end]-l[3:end], u[3:end]-m[3:end]), fillalpha=0.3, label=\"Marginalised\", ylabel=\"Reproduction number\", xlabel=\"Days since 17 August 2021\", size=(600,300))"
+    "text": "Marginal posterior distribution for \\(R_t\\)\nWe already have all the ingredients we need to find the marginal posterior distribution for \\(R_t\\). We can use the EpiFilterMarginalPosterior() function to do this.\n\npR = EpiFilterMarginalPosterior(pη, pRgivenη)\n(m, med, l, u) = calculateResults(pR, Rgrid)\nplotR = plot!(plotR, dates[3:end], m[3:end], ribbon=(m[3:end]-l[3:end], u[3:end]-m[3:end]), fillalpha=0.3, label=\"Marginalised\", ylabel=\"Reproduction number\", xlabel=\"Days since 17 August 2021\", size=(600,300))"
   },
   {
     "objectID": "EpiFilter.html#predictive-distributions",
@@ -53,7 +53,7 @@
     "href": "EpiFilter.html#predictive-coverage-and-scoring-rules",
     "title": "EpiFilter",
     "section": "Predictive coverage and scoring rules",
-    "text": "Predictive coverage and scoring rules\nCalculating predictive coverage:\n\nprintln(\"Predictive coverage of default EpiEstim = $(round(100*default_coverage))%\")\nprintln(\"Predictive coverage of marginalised EpiEstim = $(round(100*marginal_coverage))%\")\n\nPredictive coverage of default EpiEstim = 97.0%\nPredictive coverage of marginalised EpiEstim = 98.0%\n\n\nand the CRPS (lower is better) for each model:\n\ninclude(\"src/scoringRules.jl\")\ndefault_crps = CRPS(cumsum(pCdefault, dims=1), Cgrid, Ct, windin=3)\nmarginalised_crps = CRPS(cumsum(pC, dims=1), Cgrid, Ct, windin=3)\n\nprintln(\"CRPS of default EpiEstim = $(default_crps)\")\nprintln(\"CRPS of marginalised EpiEstim = $(marginalised_crps)\")\n\nCRPS of default EpiEstim = 6.765280808555216\nCRPS of marginalised EpiEstim = 6.54316604914828"
+    "text": "Predictive coverage and scoring rules\nCalculating predictive coverage:\n\nprintln(\"Predictive coverage of default EpiFilter = $(round(100*default_coverage))%\")\nprintln(\"Predictive coverage of marginalised EpiFilter = $(round(100*marginal_coverage))%\")\n\nPredictive coverage of default EpiFilter = 97.0%\nPredictive coverage of marginalised EpiFilter = 98.0%\n\n\nand the CRPS (lower is better) for each model:\n\ninclude(\"src/scoringRules.jl\")\ndefault_crps = CRPS(cumsum(pCdefault, dims=1), Cgrid, Ct, windin=3)\nmarginalised_crps = CRPS(cumsum(pC, dims=1), Cgrid, Ct, windin=3)\n\nprintln(\"CRPS of default EpiFilter = $(default_crps)\")\nprintln(\"CRPS of marginalised EpiFilter = $(marginalised_crps)\")\n\nCRPS of default EpiFilter = 6.765280808555216\nCRPS of marginalised EpiFilter = 6.54316604914828"
   },
   {
     "objectID": "EpiEstim.html",
