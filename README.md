@@ -7,7 +7,7 @@ All source code is written in Julia. Example code in the form of Jupyter noteboo
 
 Tutorials are included on the corresponding website [Rt estimators in Julia](https://nicsteyn2.github.io/RobustRtEstimators/), and in the correpsonding Jupyter notebooks in the this repository.
 
-Other than a [Julia installation](https://julialang.org/downloads/), no external software is required to run this code. Simply clone this repository, open a Julia terminal in the main directory, and copy-paste the example code snippets. [We recommend starting with EpiEstim here](https://github.com/nicsteyn2/EpiFilterFittingPublic/blob/main/EpiEstim.ipynb).
+Other than a [Julia installation](https://julialang.org/downloads/), no external software is required to run this code. Simply clone this repository, open a Julia terminal in the main directory, and copy-paste the example code snippets. [We recommend starting with EpiEstim here](EpiEstim.ipynb).
 
 ### Structure of this repository:
 
