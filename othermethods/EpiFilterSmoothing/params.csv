@@ -1,0 +1,4 @@
+simulation,parameter,mean,mode,lower,upper
+Random walk,eta,0.11215833269685942,0.108,0.081,0.15
+Sinusoidal,eta,0.15832186850477514,0.155,0.131,0.19099999999999998
+Step change,eta,0.13927009416084254,0.135,0.105,0.181

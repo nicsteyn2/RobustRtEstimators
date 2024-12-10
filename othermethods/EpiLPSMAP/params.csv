@@ -1,0 +1,7 @@
+"simulation","parameter","mode"
+"Random walk","lambda",128.726983937445
+"Random walk","rho",25.0968499802729
+"Sinusoidal","lambda",77.1242329624937
+"Sinusoidal","rho",25.2009568524588
+"Step change","lambda",99.4472882280413
+"Step change","rho",25.2326270132922
