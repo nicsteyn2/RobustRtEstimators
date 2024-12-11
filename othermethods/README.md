@@ -1,6 +1,6 @@
 # Other methods
 
-We provide simple worked examples for other methods in this folder. Results from these scripts are documented in the supplementary material of our paper (#TODO) and on the corresponding website (#TODO).
+We provide simple worked examples for other methods in this folder. Results from these scripts are documented in the supplementary material of our paper (#TODO) and on the ![corresponding website](https://nicsteyn2.github.io/RobustRtEstimators/OtherMethods.html).
 
 While each implementation is different, each model folder generally contains:
 - An example script that generates fits the model to the example data
