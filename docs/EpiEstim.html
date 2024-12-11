@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>EpiEstim – Rt estimators in Julia</title>
+<title>EpiEstim in Julia – Robust Rt estimation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -162,7 +162,7 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">Rt estimators in Julia</span>
+    <span class="navbar-title">Robust Rt estimation</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -177,11 +177,15 @@ window.Quarto = {
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./EpiEstim.html" aria-current="page"> 
-<span class="menu-text">EpiEstim</span></a>
+<span class="menu-text">EpiEstim in Julia</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./EpiFilter.html"> 
-<span class="menu-text">EpiFilter</span></a>
+<span class="menu-text">EpiFilter in Julia</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./OtherMethods.html"> 
+<span class="menu-text">Other methods</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -214,7 +218,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">EpiEstim</h1>
+<h1 class="title">EpiEstim in Julia</h1>
 </div>
 
 
@@ -243,7 +247,7 @@ window.Quarto = {
 <section id="setting-up" class="level2">
 <h2 class="anchored" data-anchor-id="setting-up">Setting up</h2>
 <p>First, we need to load the necessary source code and data. We will use data from the 2021 August outbreak of SARS-CoV-2 in Aotearoa New Zealand. The serial interval is assumed to be gamma-distributed with mean 6.5 days and standard deviation 4.2 days <span class="citation" data-cites="paragDecipheringEarlywarningSignals2021 fergusonReportImpactNonpharmaceutical2020">(<a href="#ref-paragDecipheringEarlywarningSignals2021" role="doc-biblioref">Parag, Cowling, and Donnelly 2021</a>; <a href="#ref-fergusonReportImpactNonpharmaceutical2020" role="doc-biblioref">Ferguson et al. 2020</a>)</span>.</p>
-<div id="d44908cf" class="cell" data-execution_count="1">
+<div id="52a0ece2" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">Measures</span> <span class="co"># Load package for plotting</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure we are working in the root directory</span></span>
@@ -261,7 +265,7 @@ window.Quarto = {
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">bar</span>(dates, Ct, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">400</span>), label<span class="op">=</span><span class="cn">false</span>, ylabel<span class="op">=</span><span class="st">"Reported cases"</span>, xlabel<span class="op">=</span><span class="st">"Date"</span>, title<span class="op">=</span><span class="st">"NZ COVID-19 cases (local transmission only)"</span>, margins<span class="op">=</span><span class="fl">3</span>mm, color<span class="op">=</span><span class="st">"#f25a2a"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="92">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="EpiEstim_files/figure-html/cell-2-output-1.svg" class="img-fluid figure-img"></p>
@@ -274,7 +278,7 @@ window.Quarto = {
 <section id="fitting-default-epiestim" class="level2">
 <h2 class="anchored" data-anchor-id="fitting-default-epiestim">Fitting default EpiEstim</h2>
 <p>We can fit the default EpiEstim model (with <span class="math inline">\(k = 7\)</span>) using the <code>EpiEstim(k, w, Ct)</code> function:</p>
-<div id="5192f6e5" class="cell" data-execution_count="2">
+<div id="3c044654" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>pRt <span class="op">=</span> <span class="fu">EpiEstim</span>(<span class="fl">7</span>, w, Ct)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -283,7 +287,7 @@ window.Quarto = {
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot output</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>plotR <span class="op">=</span> <span class="fu">plot</span>(dates[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>], m[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>], ribbon<span class="op">=</span>(m[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>]<span class="op">-</span>l[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>], u[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>]<span class="op">-</span>m[<span class="fl">3</span><span class="op">:</span><span class="kw">end</span>]), fillalpha<span class="op">=</span><span class="fl">0.3</span>, label<span class="op">=</span><span class="cn">false</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, xlabel<span class="op">=</span><span class="st">"Date"</span>, size<span class="op">=</span>(<span class="fl">600</span>,<span class="fl">300</span>), color<span class="op">=</span><span class="st">"#13643f"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="93">
+<div class="cell-output cell-output-display" data-execution_count="13">
 <div>
 <figure class="figure">
 <p><img src="EpiEstim_files/figure-html/cell-3-output-1.svg" class="img-fluid figure-img"></p>
@@ -295,11 +299,11 @@ window.Quarto = {
 <section id="likelihood-and-posterior-distribution-for-k" class="level2">
 <h2 class="anchored" data-anchor-id="likelihood-and-posterior-distribution-for-k">Likelihood and posterior distribution for <span class="math inline">\(k\)</span></h2>
 <p>We can calculate the likelihood on a range of <span class="math inline">\(k\)</span> values:</p>
-<div id="7b2f3899" class="cell" data-execution_count="3">
+<div id="1b1c0f36" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>kvals <span class="op">=</span> <span class="fu">collect</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">30</span>) <span class="co"># We will consider k = 1, 2, ..., 30</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>(loglik, _) <span class="op">=</span> <span class="fu">EpiEstimLogLik</span>(kvals, w, Ct; windin<span class="op">=</span><span class="fl">3</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">bar</span>(kvals, loglik[<span class="op">:</span>,<span class="kw">end</span>], label<span class="op">=</span><span class="cn">false</span>, ylabel<span class="op">=</span><span class="st">"Log-likelihood"</span>, xlabel<span class="op">=</span><span class="st">"k"</span>, size<span class="op">=</span>(<span class="fl">600</span>,<span class="fl">300</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="94">
+<div class="cell-output cell-output-display" data-execution_count="14">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="EpiEstim_files/figure-html/cell-4-output-1.svg" class="img-fluid figure-img"></p>
@@ -309,11 +313,11 @@ window.Quarto = {
 </div>
 </div>
 <p>By assuming a uniform prior distribution for <span class="math inline">\(k\)</span> and normalising, we can calculate the posterior distribution of <span class="math inline">\(k\)</span> given our observed data:</p>
-<div id="d3df74ab" class="cell" data-execution_count="4">
+<div id="50277da8" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pK <span class="op">=</span> <span class="fu">exp</span>.(loglik <span class="op">.-</span> <span class="fu">maximum</span>(loglik, dims<span class="op">=</span><span class="fl">1</span>)) <span class="co"># Apply Bayes' theorem</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>pK <span class="op">=</span> pK <span class="op">./</span> <span class="fu">sum</span>(pK, dims<span class="op">=</span><span class="fl">1</span>) <span class="co"># Normalise</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">bar</span>(kvals, pK[<span class="op">:</span>,<span class="kw">end</span>], label<span class="op">=</span><span class="cn">false</span>, ylabel<span class="op">=</span><span class="st">"Posterior probability"</span>, xlabel<span class="op">=</span><span class="st">"k"</span>, size<span class="op">=</span>(<span class="fl">600</span>,<span class="fl">300</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="95">
+<div class="cell-output cell-output-display" data-execution_count="15">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="EpiEstim_files/figure-html/cell-5-output-1.svg" class="img-fluid figure-img"></p>
@@ -327,12 +331,12 @@ window.Quarto = {
 <section id="marginal-posterior-distribution-for-r_t" class="level2">
 <h2 class="anchored" data-anchor-id="marginal-posterior-distribution-for-r_t">Marginal posterior distribution for <span class="math inline">\(R_t\)</span></h2>
 <p>To find the marginal posterior distribution for <span class="math inline">\(R_t\)</span>, we need to specify a grid of <span class="math inline">\(R_t\)</span> values to average over. We can then use the <code>EpiEstimMarginalPosterior()</code> function to calculate the marginal posterior distribution of <span class="math inline">\(R_t\)</span>.</p>
-<div id="e86b969b" class="cell" data-execution_count="5">
+<div id="21f07b97" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Rgrid <span class="op">=</span> <span class="fu">LinRange</span>(<span class="fl">0.01</span>, <span class="fl">10</span>, <span class="fl">1000</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>pR <span class="op">=</span> <span class="fu">EpiEstimMarginalPosterior</span>(w, Ct, Rgrid; windin<span class="op">=</span><span class="fl">3</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>(m, med, l, u) <span class="op">=</span> <span class="fu">calculateResults</span>(pR, Rgrid)</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(plotR, dates[<span class="fl">4</span><span class="op">:</span><span class="kw">end</span>], m[<span class="fl">4</span><span class="op">:</span><span class="kw">end</span>], ribbon<span class="op">=</span>(m[<span class="fl">4</span><span class="op">:</span><span class="kw">end</span>]<span class="op">-</span>l[<span class="fl">4</span><span class="op">:</span><span class="kw">end</span>], u[<span class="fl">4</span><span class="op">:</span><span class="kw">end</span>]<span class="op">-</span>m[<span class="fl">4</span><span class="op">:</span><span class="kw">end</span>]), fillalpha<span class="op">=</span><span class="fl">0.3</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, xlabel<span class="op">=</span><span class="st">"Date"</span>, size<span class="op">=</span>(<span class="fl">600</span>,<span class="fl">300</span>), label<span class="op">=</span><span class="st">"Marginalised estimates"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="96">
+<div class="cell-output cell-output-display" data-execution_count="16">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="EpiEstim_files/figure-html/cell-6-output-1.svg" class="img-fluid figure-img"></p>
@@ -345,7 +349,7 @@ window.Quarto = {
 <section id="predictive-distributions" class="level2">
 <h2 class="anchored" data-anchor-id="predictive-distributions">Predictive distributions</h2>
 <p>We can also estimate the default and marginalised predictive distributions for reported cases. We also calculate predictive coverages as we go (reported in the next section).</p>
-<div id="ae6b24bd" class="cell" data-execution_count="6">
+<div id="bb13906d" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Default</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>pCdefault <span class="op">=</span> <span class="fu">EpiEstimConditionalPredictive</span>(<span class="fl">7</span>, w, Ct)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>(m, med, l, u) <span class="op">=</span> <span class="fu">calculateResults</span>(pCdefault)</span>
@@ -361,7 +365,7 @@ window.Quarto = {
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Also show the observed data</span></span>
 <span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter!</span>(plotCases, <span class="fl">1</span><span class="op">:</span><span class="fu">length</span>(Ct), Ct, label<span class="op">=</span><span class="st">"Observed"</span>, color<span class="op">=:</span>black, markersize<span class="op">=</span><span class="fl">1.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="97">
+<div class="cell-output cell-output-display" data-execution_count="17">
 <div>
 <figure class="figure">
 <p><img src="EpiEstim_files/figure-html/cell-7-output-1.svg" class="img-fluid figure-img"></p>
@@ -373,7 +377,7 @@ window.Quarto = {
 <section id="predictive-coverage-and-scoring-rules" class="level2">
 <h2 class="anchored" data-anchor-id="predictive-coverage-and-scoring-rules">Predictive coverage and scoring rules</h2>
 <p>Calculating predictive coverage:</p>
-<div id="8b52890d" class="cell" data-execution_count="7">
+<div id="6edd4c20" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"Predictive coverage of default EpiEstim = </span><span class="sc">$</span>(<span class="fu">round</span>(<span class="fl">100</span><span class="op">*</span>default_coverage))<span class="st">%"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"Predictive coverage of marginalised EpiEstim = </span><span class="sc">$</span>(<span class="fu">round</span>(<span class="fl">100</span><span class="op">*</span>marginalised_coverage))<span class="st">%"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -382,7 +386,7 @@ Predictive coverage of marginalised EpiEstim = 99.0%</code></pre>
 </div>
 </div>
 <p>and the <strong>CRPS</strong> (lower is better) for each model:</p>
-<div id="9fb974c3" class="cell" data-execution_count="8">
+<div id="d26f94d4" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"src/scoringRules.jl"</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>default_crps <span class="op">=</span> <span class="fu">CRPS</span>(pCdefault, Ct, windin<span class="op">=</span><span class="fl">3</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>marginalised_crps <span class="op">=</span> <span class="fu">CRPS</span>(<span class="fu">cumsum</span>(pC, dims<span class="op">=</span><span class="fl">1</span>), Cgrid, Ct, windin<span class="op">=</span><span class="fl">3</span>)</span>

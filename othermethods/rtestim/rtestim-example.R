@@ -4,6 +4,7 @@
 rm(list=ls())
 
 library(tidyverse)
+library(foreach)
 library(rtestim)
 
 # Load simulated data
@@ -76,6 +77,7 @@ df_results = foreach (ii = seq(1, length(simulations)), .combine=rbind) %do% {
   return(rbind(rtestim_R, rtestim_I) %>% mutate(simulation=simulations[ii]))
   
 }
+
 
 # Append true values
 df_truth = df %>% rename(R = TrueRt, I=Cases) %>% pivot_longer(cols=c("R", "I"), names_to="variable", values_to="TrueValue")
