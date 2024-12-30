@@ -114,6 +114,35 @@ function simulateStepChangeRt( ; Ra = 2/3, Rb=3/2, tChange=28, w=missing, tMax=1
 end
 
 
+function simulateStochasticSIR( ; N=10000, β=0.25, γ=1/6.5, I0=50, T=100)
+    
+    # Standard compartments
+    S = zeros(T+1)
+    I = zeros(T+1)
+    R = zeros(T+1)
+
+    # Initialise
+    S[1] = N - I0
+    I[1] = I0
+    R[1] = 0
+
+    for tt in 2:(T+1)
+
+        new_infections = rand(Poisson(β * I[tt-1] * S[tt-1] / N))
+        new_recoveries = rand(Poisson(γ * I[tt-1]))
+
+        S[tt] = S[tt-1] - new_infections
+        I[tt] = I[tt-1] + new_infections - new_recoveries
+        R[tt] = R[tt-1] + new_recoveries
+
+    end
+
+    Ct = -diff(S)
+    Rt = Rt = (β/γ) * (S[1:end-1] ./ N )
+
+    return (Int.(Ct), Rt)
+end
+
 
 # ---------------------------------------------------------------------
 # ----------------- Simulate observation noise ------------------------

@@ -142,7 +142,7 @@ plt_zoom_1 = ggplot(df %>% filter(date<=perioda_en, date>=perioda_st, simulation
   scale_color_manual(values=colors) +
   scale_x_date(minor_breaks="1 day") +
   theme(legend.position="none", plot.title = element_text(hjust = 0), axis.text.x = element_text(angle = 45, hjust = 1)) +
-  ggtitle("Period A") +
+  ggtitle("Period 1") +
   xlab("") + ylab("Rt")
 plt_zoom_1
 
@@ -158,7 +158,7 @@ plt_zoom_2 = ggplot(df %>% filter(date>=periodb_st, date<=periodb_en, simulation
   scale_color_manual(values=colors) +
   scale_x_date(minor_breaks="1 day") +
   theme(legend.position="none", plot.title = element_text(hjust = 0), axis.text.x = element_text(angle = 45, hjust = 1)) +
-  ggtitle("Period B") +
+  ggtitle("Period 2") +
   xlab("Date") + ylab("")
 plt_zoom_2
 
@@ -174,7 +174,7 @@ plt_zoom_3 = ggplot(df %>% filter(date>=periodc_st, date<=periodc_en, simulation
   scale_color_manual(values=colors) +
   scale_x_date(minor_breaks="1 day") +
   theme(plot.title = element_text(hjust = 0), axis.text.x = element_text(angle = 45, hjust = 1)) +
-  ggtitle("Period C") +
+  ggtitle("Period 3") +
   xlab("") + ylab("") +
   guides(color="none", fill="none", linetype=guide_legend(title=NULL, direction="horizontal"))
 plt_zoom_3

@@ -70,7 +70,7 @@ function EpiFilterForwards(η, w, C, Rgrid)
 end
 
 
-function EpiFilterBackwards(η, w, pR, pRup, Rgrid)
+function EpiFilterBackwards(η, pR, pRup, Rgrid)
     
     nPts = length(Rgrid)
     nDay = size(pR)[2]
@@ -202,18 +202,27 @@ end
 # --------------------------------------------------
 
 # As we need to run EpiFilter on many η values, it is helpful to compute everything once
-function EpiFilterRunAllη(w, C, Rgrid, pη0, ηgrid; showProgress=true, windin=1)
+function EpiFilterRunAllη(w, C, Rgrid, pη0, ηgrid; showProgress=true, windin=1, smoothingposterior=false)
     
     # Pre-allocate output. The "cond" suffixes indicate results are conditional on η
     pRgivenη = zeros(length(Rgrid), length(C), length(ηgrid)) 
     pRupgivenη = zeros(length(Rgrid), length(C), length(ηgrid))
     stepwiseloglik = zeros(length(ηgrid), length(C))
+    qRgivenη = missing
+    if smoothingposterior
+        qRgivenη = zeros(length(Rgrid), length(C), length(ηgrid)) 
+    end
     
     # Iterate over all values of η
     ProgBar = Progress(length(ηgrid), dt=1, barlen=50, desc="Running EpiFilter on all η values...", enabled=showProgress)
     for (ii, ηi) in enumerate(ηgrid)
         (pRgivenη[:,:,ii], pObs, pRupgivenη[:,:,ii]) = EpiFilterForwards(ηi, w, C, Rgrid)
         stepwiseloglik[ii,:] = vec(log.(sum(pRupgivenη[:,:,ii] .* pObs, dims=1)))
+
+        if smoothingposterior
+            qRgivenη[:,:,ii] = EpiFilterBackwards(ηi, pRgivenη[:,:,ii], pRupgivenη[:,:,ii], Rgrid)
+        end
+
         next!(ProgBar)
     end
 
@@ -230,12 +239,20 @@ function EpiFilterRunAllη(w, C, Rgrid, pη0, ηgrid; showProgress=true, windin=
     pη = exp.(loglik) .* pη0 # Likelihood * prior
     pη = pη ./ sum(pη, dims=1)
     
-    return(pη, pRgivenη, pRupgivenη)
+    if smoothingposterior
+        return(pη, pRgivenη, pRupgivenη, qRgivenη)
+    else
+        return(pη, pRgivenη, pRupgivenη)
+    end
     
 end
 
 
 function EpiFilterMarginalPosterior(pη, pRgivenη)
+
+    if pη isa Vector
+        pη = repeat(pη[:,end], 1, size(pRgivenη, 2))
+    end
     
     # Pre-allocate
     pR = zeros(size(pRgivenη[:,:,1]))
