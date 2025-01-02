@@ -53,7 +53,7 @@ df_coverage = df %>%
 
 
 # Plot the raw data
-plt_data_rw = ggplot(df %>% filter(simulation=="Random walk", model=="EpiEstim", fit=="Marginalised")) +
+plt_data = ggplot(df %>% filter(model=="EpiEstim", fit=="Marginalised")) +
   geom_rect(aes(xmin=perioda_st, xmax=perioda_en, ymin=-Inf, ymax=Inf), fill="gray", alpha=0.4, data=.%>%filter(t==1)) +
   geom_rect(aes(xmin=periodb_st, xmax=periodb_en, ymin=-Inf, ymax=Inf), fill="gray", alpha=0.4, data=.%>%filter(t==1)) +
   geom_rect(aes(xmin=periodc_st, xmax=periodc_en, ymin=-Inf, ymax=Inf), fill="gray", alpha=0.4, data=.%>%filter(t==1)) +
@@ -65,10 +65,9 @@ plt_data_rw = ggplot(df %>% filter(simulation=="Random walk", model=="EpiEstim",
   custom_theme +
   xlab("Date") + ylab("Reported cases") +
   ggtitle("")
-plt_data_rw
 
 # Plot posteriors
-plt_post_rw = ggplot(df %>% filter(simulation=="Random walk")) +
+plt_post = ggplot(df) +
   geom_ribbon(aes(x=date, ymin=lower, ymax=upper, fill=NameForColors), data=.%>%filter(t>windin), alpha=0.5) +
   geom_line(aes(x=date, y=mean, color=NameForColors), data=.%>%filter(t>windin)) +
   geom_line(aes(x=date, y=TrueRt), color="black", lwd=0.3) +
@@ -79,14 +78,13 @@ plt_post_rw = ggplot(df %>% filter(simulation=="Random walk")) +
   scale_fill_manual(values=colors) +
   scale_color_manual(values=colors) +
   theme(legend.position="none")
-plt_post_rw
 
 # Plot predictive posteriors
-plt_predpost_rw = ggplot(df %>% filter(simulation=="Random walk")) +
+plt_predpost = ggplot(df) +
   geom_ribbon(aes(x=date, ymin=lower_cases, ymax=upper_cases, fill=NameForColors), data=.%>%filter(t>windin), alpha=0.5) +
   geom_line(aes(x=date, y=mean_cases, color=NameForColors), data=.%>%filter(t>windin)) +
   geom_point(aes(x=date, y=Cases), color="black", size=0.3) +
-  geom_text(data = df_coverage %>% filter(simulation == "Random walk"),
+  geom_text(data = df_coverage,
             aes(x = min(df$date), y = Inf, label = paste0("Coverage = ", Ct_coverage, "%\nScore = ", score)),
             hjust = 0, vjust = 1.2, size = 3, color = "black") +
   facet_grid(fit~model) +
@@ -101,36 +99,34 @@ plt_predpost_rw = ggplot(df %>% filter(simulation=="Random walk")) +
 # Plot parameter estimates
 xlims = c(0, 0.2)
 
-plt_param_rw_ef = ggplot(df_efpost %>% filter(simulation=="Random walk")) +
+plt_param_ef = ggplot(df_efpost) +
   geom_line(aes(x=eta, y=p), color="#DE7139", lwd=1) +
   geom_vline(xintercept=0.1, color="black", linetype="dotted") +
   custom_theme +
   coord_cartesian(xlim=xlims) +
   xlab("eta") + ylab("")
 
-plt_param_rw_ee = ggplot(df_eepost %>% filter(simulation=="Random walk")) +
+plt_param_ee = ggplot(df_eepost) +
   geom_col(aes(x=k, y=p), fill="#006666") +
   custom_theme +
   xlab("k") + ylab("Posterior density") +
   scale_x_continuous(breaks=seq(1,10), labels=seq(1,10), limits=c(1,10), minor_breaks=NULL) +
   geom_vline(xintercept=7, color="black", linetype="dotted")
 
-plt_param_rw = plot_grid(plt_param_rw_ee, plt_param_rw_ef, ncol=2)
+plt_param = plot_grid(plt_param_ee, plt_param_ef, ncol=2)
 
 
 
-plt = plot_grid(plot_grid(plt_data_rw, plt_param_rw, ncol=1, rel_heights=c(1, 0.7)),
-                plt_post_rw,
-                plt_predpost_rw,
+plt = plot_grid(plot_grid(plt_data, plt_param, ncol=1, rel_heights=c(1, 0.7)),
+                plt_post,
+                plt_predpost,
                 ncol=3) 
-plt
-
 
 
 
 # Zoomed-in Rt plots
 
-plt_zoom_1 = ggplot(df %>% filter(date<=perioda_en, date>=perioda_st, simulation=="Random walk")) +
+plt_zoom_1 = ggplot(df %>% filter(date<=perioda_en, date>=perioda_st)) +
   geom_hline(yintercept=1, color="black") +
   geom_ribbon(aes(x=date, ymin=lower, ymax=upper, fill=NameForColors, linetype=fit2), alpha=0.1) +
   geom_line(aes(x=date, y=upper, color=NameForColors, linetype=fit2)) +
@@ -144,9 +140,8 @@ plt_zoom_1 = ggplot(df %>% filter(date<=perioda_en, date>=perioda_st, simulation
   theme(legend.position="none", plot.title = element_text(hjust = 0), axis.text.x = element_text(angle = 45, hjust = 1)) +
   ggtitle("Period 1") +
   xlab("") + ylab("Rt")
-plt_zoom_1
 
-plt_zoom_2 = ggplot(df %>% filter(date>=periodb_st, date<=periodb_en, simulation=="Random walk")) +
+plt_zoom_2 = ggplot(df %>% filter(date>=periodb_st, date<=periodb_en)) +
   geom_hline(yintercept=1, color="black") +
   geom_ribbon(aes(x=date, ymin=lower, ymax=upper, fill=NameForColors, linetype=fit2), alpha=0.1) +
   geom_line(aes(x=date, y=upper, color=NameForColors, linetype=fit2)) +
@@ -160,9 +155,8 @@ plt_zoom_2 = ggplot(df %>% filter(date>=periodb_st, date<=periodb_en, simulation
   theme(legend.position="none", plot.title = element_text(hjust = 0), axis.text.x = element_text(angle = 45, hjust = 1)) +
   ggtitle("Period 2") +
   xlab("Date") + ylab("")
-plt_zoom_2
 
-plt_zoom_3 = ggplot(df %>% filter(date>=periodc_st, date<=periodc_en, simulation=="Random walk")) +
+plt_zoom_3 = ggplot(df %>% filter(date>=periodc_st, date<=periodc_en)) +
   geom_hline(yintercept=1, color="black") +
   geom_ribbon(aes(x=date, ymin=lower, ymax=upper, fill=NameForColors, linetype=fit2), alpha=0.1) +
   geom_line(aes(x=date, y=upper, color=NameForColors, linetype=fit2)) +
@@ -177,13 +171,12 @@ plt_zoom_3 = ggplot(df %>% filter(date>=periodc_st, date<=periodc_en, simulation
   ggtitle("Period 3") +
   xlab("") + ylab("") +
   guides(color="none", fill="none", linetype=guide_legend(title=NULL, direction="horizontal"))
-plt_zoom_3
 
 legend = get_legend(plt_zoom_3)
 
-plt2 = plot_grid(plot_grid(plt_data_rw, plt_param_rw, ncol=1, rel_heights=c(1, 0.7)),
-                 plt_post_rw,
-                 plt_predpost_rw,
+plt2 = plot_grid(plot_grid(plt_data, plt_param, ncol=1, rel_heights=c(1, 0.7)),
+                 plt_post,
+                 plt_predpost,
                  plt_zoom_1,
                  plt_zoom_2,
                  plt_zoom_3 + theme(legend.position="none"),
@@ -201,23 +194,38 @@ ggsave(paste0("paper/figures/02nzcovid.png"), plt2, dpi=300, width=25, height=14
 
 # First window
 df1 = df %>%
-  filter(date >= perioda_st, date <= perioda_en, simulation=="Random walk") %>%
+  filter(date >= perioda_st, date <= perioda_en) %>%
   group_by(model, fit) %>%
   summarise(lower_det = date[which(lower<1)[1]],
             mean_det = date[which(mean<1)[1]],
-            upper_det = date[which(upper<1)[1]])
+            upper_det = date[which(upper<1)[1]]) %>%
+  ungroup() %>%
+  mutate(name = paste0(model, fit)) %>%
+  select(-model, -fit) %>%
+  column_to_rownames(var="name") %>%
+  t()
 
 df2 = df %>%
-  filter(date >= periodb_st, date <= periodb_en, simulation=="Random walk") %>%
+  filter(date >= periodb_st, date <= periodb_en) %>%
   group_by(model, fit) %>%
   summarise(lower_det = date[which(lower>1)[1]],
             mean_det = date[which(mean>1)[1]],
-            upper_det = date[which(upper>1)[1]])
+            upper_det = date[which(upper>1)[1]]) %>%
+  ungroup() %>%
+  mutate(name = paste0(model, fit)) %>%
+  select(-model, -fit) %>%
+  column_to_rownames(var="name") %>%
+  t()
 
 df3 = df %>%
-  filter(date >= periodc_st, date <= periodc_en, simulation=="Random walk") %>%
+  filter(date >= periodc_st, date <= periodc_en) %>%
   group_by(model, fit) %>%
   summarise(lower_det = date[which(lower<1)[1]],
             mean_det = date[which(mean<1)[1]],
-            upper_det = date[which(upper<1)[1]])
+            upper_det = date[which(upper<1)[1]]) %>%
+  ungroup() %>%
+  mutate(name = paste0(model, fit)) %>%
+  select(-model, -fit) %>%
+  column_to_rownames(var="name") %>%
+  t()
 

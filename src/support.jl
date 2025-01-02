@@ -93,7 +93,10 @@ function loadData(source)
         sort!(nzdata, :date)
         
         cases = nzdata.local[539:720]
-        w = defaultGenTimeDist(length(cases))
+
+        # Use same serial interval as the official models, see: https://www.covid19modelling.ac.nz/modelling-the-potential-spread-of-covid-19-during-the-august-2021-outbreak/
+        w = pdf.(Weibull(2.826, 5.664), 1:length(cases))
+        w = w/sum(w)
 
         # Apply 5-day smoother
         cases_smooth = Int.(round.([mean(cases[max(1, ii-2):min(length(cases), ii+2)]) for ii in 1:length(cases)]))
