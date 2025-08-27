@@ -1,0 +1,33 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Robust Rt estimation"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - EpiEstim.qmd
+      - EpiFilter.qmd
+      - OtherMethods.qmd
+    tools:
+      - icon: github
+        href: https://github.com/nicsteyn2/RobustRtEstimators
+  page-footer:
+    center: "Copyright 2024, Nicholas Steyn nicholas.steyn@univ.ox.ac.uk" 
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+bibliography: bib.bib
+
+jupyter: julia-_n-threads_-1.8
+
+execute:
+  julia:
+    launchArgs: ["-t", "4"]
+  freeze: auto

@@ -121,6 +121,7 @@ plt_sc = plot_grid(plt_Rt_sc, plt_cases_sc, plt_ee_sc, plt_ef_sc, ncol=1, align=
 plt = plot_grid(plt_rw, plt_sin, plt_sc, ncol=3, rel_widths=c(1,1,1.1))
 plt
 ggsave("paper/figures/s7_stepwiselikelihoods.png", plt, width=25, height=20, dpi=300, units="cm")
+ggsave("paper/figures/s7_stepwiselikelihoods.pdf", plt, width=25, height=20, dpi=300, units="cm")
 
 
 

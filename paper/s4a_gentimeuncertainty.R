@@ -111,6 +111,7 @@ plt = plot_grid(plt_param_ee, plt_param_ef + custom_theme, plt_Rt_ee, plt_Rt_ef,
 plt_with_legend = plot_grid(plt, legend, ncol=1, rel_heights=c(1, 0.05))
 plt_with_legend
 ggsave(paste0("paper/figures/s4a_gentimeuncertainty.png"), plt_with_legend, dpi=300, width=20, height=14, units="cm")
+ggsave(paste0("paper/figures/s4a_gentimeuncertainty.pdf"), plt_with_legend, dpi=600, width=20, height=14, units="cm")
 
 
 

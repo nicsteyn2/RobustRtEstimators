@@ -57,10 +57,11 @@ plt_data = ggplot(df %>% filter(model=="EpiEstim", fit=="Marginalised")) +
   geom_rect(aes(xmin=perioda_st, xmax=perioda_en, ymin=-Inf, ymax=Inf), fill="gray", alpha=0.4, data=.%>%filter(t==1)) +
   geom_rect(aes(xmin=periodb_st, xmax=periodb_en, ymin=-Inf, ymax=Inf), fill="gray", alpha=0.4, data=.%>%filter(t==1)) +
   geom_rect(aes(xmin=periodc_st, xmax=periodc_en, ymin=-Inf, ymax=Inf), fill="gray", alpha=0.4, data=.%>%filter(t==1)) +
-  annotate("text", x=perioda_st+1, y=210, label="A", hjust=0, size=3) +
-  annotate("text", x=periodb_st+1, y=210, label="B", hjust=0, size=3) +
-  annotate("text", x=periodc_st+1, y=210, label="C", hjust=0, size=3) +
+  annotate("text", x=perioda_st+1, y=205, label="A", hjust=0, size=3) +
+  annotate("text", x=periodb_st+1, y=205, label="B", hjust=0, size=3) +
+  annotate("text", x=periodc_st+1, y=205, label="C", hjust=0, size=3) +
   geom_col(aes(x=date, y=Cases), width = 0.8) +
+  ylim(0, 210) +
   # scale_x_continuous(limits = c(0, 100)) +
   custom_theme +
   xlab("Date") + ylab("Reported cases") +
@@ -188,7 +189,7 @@ plt2 = plot_grid(plot_grid(plt_data, plt_param, ncol=1, rel_heights=c(1, 0.7)),
                  labels=c("A)", "B)", "C)", "D)", "E)", "F)")) 
 plt2
 ggsave(paste0("paper/figures/02nzcovid.png"), plt2, dpi=300, width=25, height=14, units="cm")
-
+ggsave(paste0("paper/figures/02nzcovid.pdf"), plt2, dpi=600, width=25, height=14, units="cm")
 
 # Fetch numbers for table
 

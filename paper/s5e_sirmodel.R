@@ -163,4 +163,5 @@ plt = plot_grid(plt_data_raw, plt_data_noise,
                 ncol=2, rel_heights = c(0.35,0.25,0.6,0.6)) 
 plt
 ggsave(paste0("paper/figures/s5e_sir.png"), plt, dpi=300, width=20, height=21, units="cm")
+ggsave(paste0("paper/figures/s5e_sir.pdf"), plt, dpi=600, width=20, height=21, units="cm")
 

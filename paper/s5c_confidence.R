@@ -126,3 +126,4 @@ plt_sc = plot_grid(plt_sc_cc, plt_sc_ic  + theme(legend.position="none"), ncol=1
 plt = plot_grid(plot_grid(plt_rw, plt_sin, plt_sc, ncol=3), legend, ncol=1, rel_heights=c(1,0.2))
 plt
 ggsave("paper/figures/s5c_confidence.png", plt, width=25, height=12, dpi=300, units="cm")
+ggsave("paper/figures/s5c_confidence.pdf", plt, width=25, height=12, dpi=600, units="cm")

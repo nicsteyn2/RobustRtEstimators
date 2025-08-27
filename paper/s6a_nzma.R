@@ -209,3 +209,4 @@ plt_10 = plot_grid(plt_data_10, plt_param_10, plt_post_10, plt_predpost_10, ncol
 plt = plot_grid(plt_raw, plt_5, plt_10, ncol=3) 
 plt
 ggsave(paste0("paper/figures/s6a_nzma.png"), plt, dpi=300, width=25, height=21, units="cm")
+ggsave(paste0("paper/figures/s6a_nzma.pdf"), plt, dpi=600, width=25, height=21, units="cm")

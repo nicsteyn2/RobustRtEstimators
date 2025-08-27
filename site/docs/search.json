@@ -1,0 +1,170 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Robust Rt estimation",
+    "section": "",
+    "text": "We provide simple Julia implementations of two popular methods for reproduction number estimation: EpiEstim (Cori et al. 2013) and EpiFilter (Parag 2021). In addition to the original methods, we also provide functions for calculating model likelihoods and marginalising out uncertainty about model parameters from final estimates of \\(R_t\\).\nThese scripts were developed as part of Robust uncertainty quantification in popular estimators of the instantaneous reproduction number. All technical details can be found in this paper and the corresponding supplementary material.\nWhile the paper above focuses on real-time estimation, we also provide a discussion and comparison of retrospective methods.\n\n\nCode\nusing Plots, Measures\n\n# Ensure we are working in the root directory\nconst rootdir = @__DIR__\ncd(joinpath(rootdir, \"..\"))\n\n# Load scripts\ninclude(\"src/EpiEstim.jl\")\ninclude(\"src/support.jl\")\n\n# Set k parameter and load data\nk = 7\n(Ct, w) = loadData(\"NZCOVID\")\ndates = Date(\"2020-02-26\") + Day.(0:99)\n\n# Run the model and extract mean and credible intervals\npR = EpiEstim(k, w, Ct)\nm = mean.(pR)\nl = quantile.(pR, 0.025)\nu = quantile.(pR, 0.975)\n\n# Plot\nplot_cases = bar(dates, Ct, xlabel=\"Date\", ylabel=\"Reported cases\", label=false, size=(800, 400), margins=3mm, color=\"#f25a2a\")\nplot_Rt = plot(dates, m, ribbon=(m-l,u-m), label=false, xlabel=\"Date\", ylabel=\"Reproduction number\", size=(800,400), margins=3mm, color=\"#13643f\")\nhline!(plot_Rt, [1], label=false, color=:black, linestyle=:dash)\nplot(plot_cases, plot_Rt, layout=(2,1), size=(800,600))\n\n\n\n\n\nReported cases from the first 100 days of the COVID-19 pandemic in Aotearoa New Zealand (upper) and the estimated reproduction number using EpiEstim with a default smoothing value of k = 7 (lower). Data were obtained from the Ministry of Health.\n\n\n\n\nOther than a Julia installation, no external software is required to run this code. All functions are provided in the /src/ directory of the GitHub repository.\n\n\n\n\nReferences\n\nCori, Anne, Neil M. Ferguson, Christophe Fraser, and Simon Cauchemez. 2013. “A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics.” American Journal of Epidemiology 178 (9): 1505–12. https://doi.org/10.1093/aje/kwt133.\n\n\nParag, Kris V. 2021. “Improved Estimation of Time-Varying Reproduction Numbers at Low Case Incidence and Between Epidemic Waves.” PLOS Computational Biology 17 (9): e1009347. https://doi.org/10.1371/journal.pcbi.1009347."
+  },
+  {
+    "objectID": "OtherMethods.html",
+    "href": "OtherMethods.html",
+    "title": "Other methods",
+    "section": "",
+    "text": "During work for Robust uncertainty quantification…, we considered other methods. These were not included in the main text as they are retrospective rather than real-time (although they can be used for real-time analysis also). Preliminary results are included here."
+  },
+  {
+    "objectID": "OtherMethods.html#epifilter-smoothing-version",
+    "href": "OtherMethods.html#epifilter-smoothing-version",
+    "title": "Other methods",
+    "section": "EpiFilter (smoothing version)",
+    "text": "EpiFilter (smoothing version)\nIn addition to the filtering distribution, EpiFilter also provides a method to find the smoothing distribution, conditional on smoothing parameter \\(\\eta\\). Using the same arguments as for filtering, we marginalise over \\(\\eta\\) to find the marginal smoothing distribution:\n\\[ P(R_t|C_{1:T}) = \\int P(R_t | C_{1:T}, \\eta) P(\\eta | C_{1:T}) \\ d\\eta \\]\nThis requires the posterior distribution for \\(\\eta\\) once all data are collected: \\(P(\\eta|C_{1:T})\\). We introduce methodology for this in Robust uncertainty quantification….\nThe posterior smoothing distribution for observed case incidence is found by marginalising over \\(R_t\\) from the smoothing posterior distribution for \\(R_t\\) (instead of the predictive distribution for \\(R_t\\)):\n\\[ P(\\tilde{C}_t | C_{1:T}) = \\int P(\\tilde{C}_t | R_t, C_{1:T}) P(R_t | C_{1:T}) \\ dR_t \\]\nFor simplicity, we use the renewal model for \\(P(\\tilde{C}_t | R_t, C_{1:T})\\), even though this ignores future reported case incidence. That is, future case data \\(C_{t:T}\\) only features in \\(P(\\tilde{C}_t | C_{1:T})\\) via \\(R_t\\).\nCRPS is calculated using the methodology outlined in Robust uncertainty quantification…."
+  },
+  {
+    "objectID": "OtherMethods.html#epinow2",
+    "href": "OtherMethods.html#epinow2",
+    "title": "Other methods",
+    "section": "EpiNow2",
+    "text": "EpiNow2\nRather than using a Gaussian random walk (as in EpiFilter) or fixed sliding windows (as in EpiEstim), EpiNow2 models the evolution of \\(R_t\\) using a Gaussian process. The default implementation then assumes that latent infection incidence follows a deterministic renewal model. Reported cases are assumed to be negative binomially distributed around the true infection, with a day-of-the-week effect that is estimated during the fitting process. That is, EpiNow2 accounts for both process noise (in the evolution of \\(R_t\\)) and observation noise (in the distribution for reported cases).\nSmoothness in \\(R_t\\) is primarily controlled by the Gaussian process kernel (default Matern 3/2, with lengthscale \\(\\ell\\) and magnitude \\(\\alpha\\)). In particular, prior assumptions about the lengthscale \\(\\ell\\) have a significant impact on the smoothness of resulting estimates. It is also expected that prior assumptions about the observation overdispersion will have a secondary effect on the smoothness of \\(R_t\\) estimates (as this impacts the trade-off between process and observation noise).\nThe EpiNow2 package provides pre-built functionality to extract central estimates and credible intervals for \\(R_t\\) and observed cases. As far as we are aware, the package does not provide a method to calculate the CRPS, so we provide our own sample-based implementation.\nSamples from the posterior distribution for reported cases \\(\\{x_t^{(i)}\\}_{i=1}^N\\) at time \\(t\\) are extracted from the Stan fit object. We then use the sample-based CRPS estimator:\n\\[ \\text{CRPS}_t = \\frac{1}{N} \\sum_{i=1}^n |x_t^{(i)} - C_t| - \\frac{1}{2N^2} \\sum_{i=1}^n \\sum_{j=1}^n |x_t^{(i)} - x_t^{(j)}| \\]\nCalculating this for each time-step \\(t\\) and taking the average gives the CRPS for observed case incidence. Code to reproduce this is available on GitHub.\nBy default, EpiNow2 uses a log normal prior distribution for the lengthscale \\(\\ell\\) with mean 21 days and standard deviation 7 days. We also test an alternative and less informative inverse-gamma prior distribution provided with the package, which performs considerably better."
+  },
+  {
+    "objectID": "OtherMethods.html#epilps-map",
+    "href": "OtherMethods.html#epilps-map",
+    "title": "Other methods",
+    "section": "EpiLPS (MAP)",
+    "text": "EpiLPS (MAP)\nEpiLPS models latent infection incidence using Bayesian P-splines. Given infection incidence \\(\\mu(t)\\) and overdispersion parameter \\(\\rho\\), reported cases are assumed to be negative binomially distributed around \\(\\mu(t)\\). In the maximum a posteriori (MAP) version of EpiLPS, central estimates of \\(R_t\\) are calculated using a plug-in estimate of the posterior mean incidence \\(\\hat{\\mu}(t)\\) and uncertainty is derived using a delta method. Like EpiNow2, EpiLPS explicitly accounts for both process noise (in the splines used to model infection incidence) and observation noise (in the distribution for reported cases).\nSmoothness in \\(R_t\\) is primarily controlled by parameter \\(\\lambda\\), where larger values penalise sharp changes in infection incidence. A hierarchical prior distribution is assumed for \\(\\lambda\\). Prior assumptions about the overdispersion parameter \\(\\rho\\) also likely impact the smoothness of \\(R_t\\) estimates, as this controls how much noise is associated with the observation process rather than the underlying epidemic process. The MAP version of EpiLPS selects optimal values of \\(\\lambda\\) and \\(\\rho\\) using an optimization routine.\nWhile \\(K = 30\\) is used as the default number of splines, we find that this leads to inaccurate inference on our example datasets. For our examples, we increase this to \\(K = 100\\), which allows for more flexible inference.\nWe provide two extensions to the EpiLPS package:\n\nMethods to sample from the posterior distribution for reported cases.\nA CRPS estimator for the posterior distribution for reported cases.\n\nInfection incidence is defined as \\(\\mu(t) = \\exp(\\theta^T b(t))\\), where \\(\\theta\\) is an estimated vector of spline coefficients and \\(b(t)\\) are the basis functions evaluated at time \\(t\\). The MAP version of EpiLPS uses a multivariate Gaussian approximation to \\(\\theta\\) at the MAP estimate of \\(\\lambda\\). We sample from this distribution:\n\\[ \\theta^{(i)} \\sim MVN(\\hat{\\theta}, Q_\\lambda^{-1}) \\]\nand use these samples to generate samples of latent infection incidence:\n\\[ \\mu^{(i)}(t) = \\exp(\\theta^{(i)T} b(t)) \\]\nfrom which samples of observed data are generated:\n\\[ C_t^{(i)} \\sim \\text{NegBin}(\\mu^{(i)}(t), \\rho) \\]\nwhere \\(\\rho\\) is the MAP value of the overdispersion parameter. This is repeated \\(N\\) times (default \\(N = 1000\\)) at each value of \\(t\\). The mean of these \\(N\\) samples is reported as the central estimate, with 95% credible intervals obtained by taking the 2.5th and 97.5th percentile values.\nThe CRPS is calculated similarly, first by sampling \\(\\mu^{(i)}(t)\\) as above and then using the crps_nbinom() function from the scoringRules package in R to calculate the CRPS value for each sampled \\(\\mu^{(i)}(t)\\) and \\(C_t\\). The mean of these \\(N\\) CRPS values is reported as the CRPS for the \\(t^{th}\\) observed case incidence.\nSome code is available on GitHub, although copyright limitations prevent us from providing the full implementation, in which case we outline the steps required to reproduce our analysis."
+  },
+  {
+    "objectID": "OtherMethods.html#epilps-mala",
+    "href": "OtherMethods.html#epilps-mala",
+    "title": "Other methods",
+    "section": "EpiLPS (MALA)",
+    "text": "EpiLPS (MALA)\nThe MALA version of EpiLPS replaces the Laplace approximation and optimisation routine with a full MCMC-type sampler. This has the advantage of returning a posterior distribution on \\(\\lambda\\) and \\(\\rho\\), as well as properly marginalising out uncertainty about these quantities. As the true posterior distribution of spline coefficients \\(\\theta\\) is targeted, we also expect the posterior distributions for \\(R_t\\) and observed cases incidence to be more accurate. This comes at a cost of slightly increased computational complexity, although we do not find this to be prohibitive.\nThe default version of EpiLPS(MALA) does not return the MCMC sampling object. In order to access this, we created a customised version of estimRmcmc.R that includes MCMC=MCMCout in the outputlist of the function. This is the sole change required to this script, although running it requires having local copies of some files from the EpiLPS package. A list of the required files is given here.\nWe make the same two extensions to EpiLPS(MALA) as we did to EpiLPS(MAP):\n\nMethods to sample from the posterior distribution for reported cases.\nA CRPS estimator for the posterior distribution for reported cases.\n\nSamples of reported case incidence are extracted from the MCMC sampling object. For each sample \\(i  = 1, \\ldots, N\\) and time-step \\(t = 1, \\ldots, T\\) we sample:\n\\[ C_t^{(i)} \\sim \\text{NegBin}(\\exp(\\theta^{(i)T} b(t)), \\rho^{(i)}) \\]\nwhere \\(\\theta^{(i)}\\) and \\(\\rho^{(i)}\\) are samples from the MCMC sampling object. Note the use of \\(\\rho^{(i)}\\) instead of the MAP value of \\(\\rho\\), ensuring we are appropriately accounting for uncertainty in this parameter.\nThe CRPS is calculated from sampled \\(C_t^{(i)}\\) using the same approach as for EpiNow2, relying upon the sample-based CRPS estimator (see above).\nSome code is available on GitHub, although copyright limitations prevent us from providing the full implementation, in which case we outline the steps required to reproduce our analysis."
+  },
+  {
+    "objectID": "OtherMethods.html#rtestim",
+    "href": "OtherMethods.html#rtestim",
+    "title": "Other methods",
+    "section": "rtestim",
+    "text": "rtestim\nIn contrast to the aforementioned Bayesian methods, rtestim is grounded in a frequentist framework. \\(R_t\\) is modelled using piecewise cubic functions with \\(\\ell_1\\) regularisation on the divided differences. This regularisation enforces sparsity in changes in \\(R_t\\), allowing for locally adaptive smoothness, a key advantage over the other methods considered here that assume global smoothness.\nA tuning parameter \\(\\lambda\\) controls the strength of this regularisation, with larger values enforcing smoother estimates of \\(R_t\\). The optimal value of this parameter is automatically chosen by rtestim using cross-validation.\nrtestim uses the delta method to calculate confidence intervals. Built-in functions are provided to calculate these for \\(R_t\\) and observed case incidence, for any user-specified significance level. To match the other methods we use a 95% confidence level.\nWhile the frequentist framework of rtestim does not admit a posterior distribution for observed case incidence, we can still use CRPS to measure how well the confidence intervals approximate the observed distribution of the data. To do this, we treat the bounds of the confidence intervals at different significance levels as defining quantiles of an empirical CDF. That is, at each time-step \\(t\\), we find \\(x_t^{(i)}\\) such that \\(q^{(i)} = F(x_i^{(t)})\\) for \\(q^{(i)} = 0.01, 0.02, \\ldots, 0.99\\). We then approximate the CRPS numerically at time-step \\(t\\) using the trapezoidal rule:\n\\[ CRPS_t = \\sum_{i=1}^{n-1} \\frac{1}{2} \\left(x_t^{(i+1)} - x_t^{(i)}\\right) \\left[ \\left(q^{(i+1)} - \\mathbb{I}(x_t^{(i+1)} \\geq y_t)\\right)^2 + \\left(q^{(i)} - \\mathbb{I}(x_t^{(i)} \\geq y_t)\\right)^2 \\right] \\]\nAveraging \\(CRPS_t\\) over all time-steps \\(t\\) gives the CRPS for observed case incidence. Code to reproduce this is available on GitHub."
+  },
+  {
+    "objectID": "OtherMethods.html#additional-methodological-notes",
+    "href": "OtherMethods.html#additional-methodological-notes",
+    "title": "Other methods",
+    "section": "Additional methodological notes",
+    "text": "Additional methodological notes\nEach method handles the wind-in period differently, particularly when \\(t\\) is small compared to generation times. This can become fairly complicated, and is not the point of this supplementary section. When estimating or calculating coverage and CRPS, we use time-steps \\(t = 10, \\ldots, T\\) to avoid differences from this period impacting our results.\nPosterior parameter values were calculated using a grid-based approach for EpiFilter. For EpiLPS (MALA) and EpiNow2, a sampling approach was required. The mean, 2.5th and 97.5th quantiles of these samples were calculated to estimate the posterior mean and 95% credible intervals. Posterior mode values were calculated using a kernel density estimate from the default density() function in R."
+  },
+  {
+    "objectID": "OtherMethods.html#prior-distributions-on-smoothing-parameters",
+    "href": "OtherMethods.html#prior-distributions-on-smoothing-parameters",
+    "title": "Other methods",
+    "section": "Prior distributions on smoothing parameters",
+    "text": "Prior distributions on smoothing parameters\nWhile all methods listed estimate smoothing parameter(s) from the data, they handle this in different ways. Our implementation of EpiFilter, EpiNow2, and EpiLPS(MALA) marginalise this parameter out. EpiLPS(MAP) and rtestim select optimal point values of this parameter.\nOf particular note is EpiNow2’s prior on lengthscale \\(\\ell\\). Prior and posterior modes and credible intervals are give in Table 2. The default log-normal prior distribution often leads to oversmoothing, with an extreme example being the bimodal posterior on the sinusoidal simulation - where one mode implies that \\(R_t\\) is (nearly) fixed, and all variation in reported cases is assigned to the observation process.\n\n\n\nTable 2: MAP and 95% credible intervals for the parameter prior and posterior distributions, where they exist. The upper portion of the table refers to smoothing parameters and the lower portion refers to estimated overdispersion. Numerical instabilities lead to large variations in statistics in some cases which are marked by a “-”. As rtestim is frequentist, there are no prior assumptions on \\(\\lambda\\), and the values are chosen by cross-validation instead of being MAP estimates.\n\n\n\n\n\n\nBy default, we place a uniform prior distribution on EpiFilter’s \\(\\eta\\) parameter. While we avoid claiming that the uniform prior distribution is uninformative, we do highlight a key advantage of this: the MAP is equal to the MLE. By the predictive decomposition of the likelihood, this is also the value of \\(\\eta\\) that optimises one-step-ahead predictions. That is, using a flat prior distribution enforces a MAP that is optimal for one-step-ahead forecasting. Furthermore, if the model is correctly specified, this implies that the MAP is optimal for any n-step-ahead forecast."
+  },
+  {
+    "objectID": "OtherMethods.html#footnotes",
+    "href": "OtherMethods.html#footnotes",
+    "title": "Other methods",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nThe “smoothing” in “smoothing distribution” has a different meaning to “smoothing” in “smoothing parameter”.↩︎"
+  },
+  {
+    "objectID": "EpiFilter.html",
+    "href": "EpiFilter.html",
+    "title": "EpiFilter in Julia",
+    "section": "",
+    "text": "EpiFilter assumes that \\(R_t\\) follows a Gaussian random walk with standard deviation at time-step \\(t\\) equal to \\(\\eta\\sqrt{R_{t-1}}\\). This notebook:\nAll code can be found in the /src/ folder of the GitHub repository. We recommend cloning this repository and then opening EpiFilter.ipynb in your preferred Jupyter notebook environment."
+  },
+  {
+    "objectID": "EpiFilter.html#setting-up",
+    "href": "EpiFilter.html#setting-up",
+    "title": "EpiFilter in Julia",
+    "section": "Setting up",
+    "text": "Setting up\nFirst, we need to load the necessary source code and data. We will use data from the 2021 August outbreak of SARS-CoV-2 in Aotearoa New Zealand. The serial interval is assumed to be gamma-distributed with mean 6.5 days and standard deviation 4.2 days (Parag, Cowling, and Donnelly 2021; Ferguson et al. 2020).\n\nusing Plots, Measures # Load package for plotting\n\n# Ensure we are working in the root directory\n# You may need to edit this for your own machine\nconst rootdir = @__DIR__\ncd(joinpath(rootdir, \"..\"))\n\n# Load source files\ninclude(\"src/EpiFilter.jl\")\ninclude(\"src/support.jl\")\n\n# Load data\n(Ct, w) = loadData(\"NZCOVID_AUG2021\")\ndates = Date(\"2021-08-17\") .+ Day.(0:181)\n\n# Plot\nbar(dates, Ct, size=(800,400), label=false, ylabel=\"Reported cases\", xlabel=\"Date\", title=\"NZ COVID-19 cases (local transmission only)\", margins=3mm, color=\"#f25a2a\")\n\n\n\n\nReported cases of COVID-19 from between 17 August 2021 and 14 February 2022."
+  },
+  {
+    "objectID": "EpiFilter.html#fitting-default-epifilter",
+    "href": "EpiFilter.html#fitting-default-epifilter",
+    "title": "EpiFilter in Julia",
+    "section": "Fitting default EpiFilter",
+    "text": "Fitting default EpiFilter\nWe can fit the default EpiFilter model (with \\(\\eta = 0.1\\)) using the EpiFilter(η, w, Ct) function:\n\n# Fit the model\nRgrid = LinRange(0.01, 10, 1000)\n(pRt, _, _) = EpiFilterForwards(0.1, w, Ct, Rgrid)\n\n# Extract mean and 95% credible interval\n(m, med, l, u) = calculateResults(pRt, Rgrid)\n\n# Plot output\nplotR = plot(dates[3:end], m[3:end], ribbon=(m[3:end]-l[3:end], u[3:end]-m[3:end]), fillalpha=0.3, label=false, ylabel=\"Reproduction number\", xlabel=\"Date\", size=(600,300), color=\"#13643f\")\n\n\n\n\n\n\n\n\nSide-note: we also provide a function EpiFilterBackwards() which runs the backward-smoother version of EpiFilter. As our focus is on real-time estimation, we will not use this function in this notebook."
+  },
+  {
+    "objectID": "EpiFilter.html#likelihood-and-posterior-distribution-for-eta",
+    "href": "EpiFilter.html#likelihood-and-posterior-distribution-for-eta",
+    "title": "EpiFilter in Julia",
+    "section": "Likelihood and posterior distribution for \\(\\eta\\)",
+    "text": "Likelihood and posterior distribution for \\(\\eta\\)\nTo find the posterior distribution of \\(\\eta\\), we run the model on a grid of values to estimate the likelihood, and normalise with respect to a prior distribution (in this case we use a uniform prior distribution on \\((0, 1)\\)). This takes approximately 1 minute on a 2021 MacBook Pro.\n\nηgrid = LinRange(0.001, 1, 1000) # The values of η to consider\npη0 = ones(length(ηgrid))/length(ηgrid) # A uniform prior on η\n(pη, pRgivenη, pRupgivenη) = EpiFilterRunAllη(w, Ct, Rgrid, pη0, ηgrid; windin=3, showProgress=false)\nplot(ηgrid, pη[:,end], label=false, xlabel=\"η\", ylabel=\"Posterior probability\", size=(600,300))"
+  },
+  {
+    "objectID": "EpiFilter.html#marginal-posterior-distribution-for-r_t",
+    "href": "EpiFilter.html#marginal-posterior-distribution-for-r_t",
+    "title": "EpiFilter in Julia",
+    "section": "Marginal posterior distribution for \\(R_t\\)",
+    "text": "Marginal posterior distribution for \\(R_t\\)\nWe already have all the ingredients we need to find the marginal posterior distribution for \\(R_t\\). We can use the EpiFilterMarginalPosterior() function to do this.\n\npR = EpiFilterMarginalPosterior(pη, pRgivenη)\n(m, med, l, u) = calculateResults(pR, Rgrid)\nplotR = plot!(plotR, dates[3:end], m[3:end], ribbon=(m[3:end]-l[3:end], u[3:end]-m[3:end]), fillalpha=0.3, label=\"Marginalised\", ylabel=\"Reproduction number\", xlabel=\"Days since 17 August 2021\", size=(600,300))"
+  },
+  {
+    "objectID": "EpiFilter.html#predictive-distributions",
+    "href": "EpiFilter.html#predictive-distributions",
+    "title": "EpiFilter in Julia",
+    "section": "Predictive distributions",
+    "text": "Predictive distributions\nWe also have all the ingredients required for the predictive distributions:\n\nCgrid = 0:(10*maximum(Ct))\n\n# Default\npCdefault = EpiFilterConditionalPredictive(0.1, w, Ct, Rgrid, Cgrid)\n(m, med, l, u) = calculateResults(pCdefault, Cgrid)\ndefault_coverage = mean((l[4:end] .&lt;= Ct[4:end]) .& (Ct[4:end] .&lt;= u[4:end]))\nplotCases = plot(4:length(m), m[4:end], ribbon=(m[4:end]-l[4:end], u[4:end]-m[4:end]), label=\"Default\", ylabel=\"Reported cases\", xlabel=\"Days\")\n\n# Marginalised\npC = EpiFilterMarginalPredictive(pη, pRupgivenη, w, Ct, Rgrid, Cgrid)\n(m, med, l, u) = calculateResults(pC, Cgrid)\nmarginal_coverage = mean((l[4:end] .&lt;= Ct[4:end]) .& (Ct[4:end] .&lt;= u[4:end]))\nplot!(plotCases, 4:length(m), m[4:end], ribbon=(m[4:end]-l[4:end], u[4:end]-m[4:end]), label=\"Marginalised\")\n\n# Also show the observed data\nscatter!(plotCases, 1:length(Ct), Ct, label=\"Observed\", color=:black, markersize=1.5)"
+  },
+  {
+    "objectID": "EpiFilter.html#predictive-coverage-and-scoring-rules",
+    "href": "EpiFilter.html#predictive-coverage-and-scoring-rules",
+    "title": "EpiFilter in Julia",
+    "section": "Predictive coverage and scoring rules",
+    "text": "Predictive coverage and scoring rules\nCalculating predictive coverage:\n\nprintln(\"Predictive coverage of default EpiFilter = $(round(100*default_coverage))%\")\nprintln(\"Predictive coverage of marginalised EpiFilter = $(round(100*marginal_coverage))%\")\n\nPredictive coverage of default EpiFilter = 97.0%\nPredictive coverage of marginalised EpiFilter = 98.0%\n\n\nand the CRPS (lower is better) for each model:\n\ninclude(\"src/scoringRules.jl\")\ndefault_crps = CRPS(cumsum(pCdefault, dims=1), Cgrid, Ct, windin=3)\nmarginalised_crps = CRPS(cumsum(pC, dims=1), Cgrid, Ct, windin=3)\n\nprintln(\"CRPS of default EpiFilter = $(default_crps)\")\nprintln(\"CRPS of marginalised EpiFilter = $(marginalised_crps)\")\n\nCRPS of default EpiFilter = 6.765280808555216\nCRPS of marginalised EpiFilter = 6.54316604914828"
+  },
+  {
+    "objectID": "EpiEstim.html",
+    "href": "EpiEstim.html",
+    "title": "EpiEstim in Julia",
+    "section": "",
+    "text": "EpiEstim assumes that \\(R_t\\) is fixed over trailing windows of length \\(k\\). This notebook:\nAll code can be found in the /src/ folder of the GitHub repository. We recommend cloning this repository and then opening EpiEstim.ipynb in your preferred Jupyter notebook environment."
+  },
+  {
+    "objectID": "EpiEstim.html#setting-up",
+    "href": "EpiEstim.html#setting-up",
+    "title": "EpiEstim in Julia",
+    "section": "Setting up",
+    "text": "Setting up\nFirst, we need to load the necessary source code and data. We will use data from the 2021 August outbreak of SARS-CoV-2 in Aotearoa New Zealand. The serial interval is assumed to be gamma-distributed with mean 6.5 days and standard deviation 4.2 days (Parag, Cowling, and Donnelly 2021; Ferguson et al. 2020).\n\nusing Plots, Measures # Load package for plotting\n\n# Ensure we are working in the root directory\n# You may need to edit this for your own machine\nconst rootdir = @__DIR__\ncd(joinpath(rootdir, \"..\"))\n\n# Load source files\ninclude(\"src/EpiEstim.jl\")\ninclude(\"src/support.jl\")\n\n# Load data\n(Ct, w) = loadData(\"NZCOVID_AUG2021\")\ndates = Date(\"2021-08-17\") .+ Day.(0:181)\n\n# Plot\nbar(dates, Ct, size=(800,400), label=false, ylabel=\"Reported cases\", xlabel=\"Date\", title=\"NZ COVID-19 cases (local transmission only)\", margins=3mm, color=\"#f25a2a\")\n\n\n\n\nReported cases of COVID-19 from between 17 August 2021 and 14 February 2022."
+  },
+  {
+    "objectID": "EpiEstim.html#fitting-default-epiestim",
+    "href": "EpiEstim.html#fitting-default-epiestim",
+    "title": "EpiEstim in Julia",
+    "section": "Fitting default EpiEstim",
+    "text": "Fitting default EpiEstim\nWe can fit the default EpiEstim model (with \\(k = 7\\)) using the EpiEstim(k, w, Ct) function:\n\n# Fit the model\npRt = EpiEstim(7, w, Ct)\n\n# Extract mean and 95% credible interval\n(m, l, u) = (mean.(pRt), quantile.(pRt, 0.025), quantile.(pRt, 0.975))\n\n# Plot output\nplotR = plot(dates[3:end], m[3:end], ribbon=(m[3:end]-l[3:end], u[3:end]-m[3:end]), fillalpha=0.3, label=false, ylabel=\"Reproduction number\", xlabel=\"Date\", size=(600,300), color=\"#13643f\")"
+  },
+  {
+    "objectID": "EpiEstim.html#likelihood-and-posterior-distribution-for-k",
+    "href": "EpiEstim.html#likelihood-and-posterior-distribution-for-k",
+    "title": "EpiEstim in Julia",
+    "section": "Likelihood and posterior distribution for \\(k\\)",
+    "text": "Likelihood and posterior distribution for \\(k\\)\nWe can calculate the likelihood on a range of \\(k\\) values:\n\nkvals = collect(1:30) # We will consider k = 1, 2, ..., 30\n(loglik, _) = EpiEstimLogLik(kvals, w, Ct; windin=3)\nbar(kvals, loglik[:,end], label=false, ylabel=\"Log-likelihood\", xlabel=\"k\", size=(600,300))\n\n\n\n\nLog-likelihood of \\(k = 1, \\ldots, 30\\)\n\n\n\n\nBy assuming a uniform prior distribution for \\(k\\) and normalising, we can calculate the posterior distribution of \\(k\\) given our observed data:\n\npK = exp.(loglik .- maximum(loglik, dims=1)) # Apply Bayes' theorem\npK = pK ./ sum(pK, dims=1) # Normalise\nbar(kvals, pK[:,end], label=false, ylabel=\"Posterior probability\", xlabel=\"k\", size=(600,300))\n\n\n\n\nPosterior distribution of \\(k\\).\n\n\n\n\nIn this case it is clear that \\(k = 2\\) is the most likely value given the data. We could just run EpiEstim at \\(k = 2\\), but let’s be more thorough and use the full marginal posterior estimator."
+  },
+  {
+    "objectID": "EpiEstim.html#marginal-posterior-distribution-for-r_t",
+    "href": "EpiEstim.html#marginal-posterior-distribution-for-r_t",
+    "title": "EpiEstim in Julia",
+    "section": "Marginal posterior distribution for \\(R_t\\)",
+    "text": "Marginal posterior distribution for \\(R_t\\)\nTo find the marginal posterior distribution for \\(R_t\\), we need to specify a grid of \\(R_t\\) values to average over. We can then use the EpiEstimMarginalPosterior() function to calculate the marginal posterior distribution of \\(R_t\\).\n\nRgrid = LinRange(0.01, 10, 1000)\npR = EpiEstimMarginalPosterior(w, Ct, Rgrid; windin=3)\n(m, med, l, u) = calculateResults(pR, Rgrid)\nplot!(plotR, dates[4:end], m[4:end], ribbon=(m[4:end]-l[4:end], u[4:end]-m[4:end]), fillalpha=0.3, ylabel=\"Reproduction number\", xlabel=\"Date\", size=(600,300), label=\"Marginalised estimates\")\n\n\n\n\nPosterior distribution of \\(R_t\\) from the default model (green) and the marginalised model (orange), demonstrating the additional uncertainty arising from \\(k\\)."
+  },
+  {
+    "objectID": "EpiEstim.html#predictive-distributions",
+    "href": "EpiEstim.html#predictive-distributions",
+    "title": "EpiEstim in Julia",
+    "section": "Predictive distributions",
+    "text": "Predictive distributions\nWe can also estimate the default and marginalised predictive distributions for reported cases. We also calculate predictive coverages as we go (reported in the next section).\n\n# Default\npCdefault = EpiEstimConditionalPredictive(7, w, Ct)\n(m, med, l, u) = calculateResults(pCdefault)\ndefault_coverage = mean((l[4:end] .&lt;= Ct[4:end]) .& (Ct[4:end] .&lt;= u[4:end]))\nplotCases = plot(4:length(m), m[4:end], ribbon=(m[4:end]-l[4:end], u[4:end]-m[4:end]), label=\"Default\", ylabel=\"Reported cases\", xlabel=\"Days\")\n\n# Marginalised\nCgrid = 0:(10*maximum(Ct))\npC = EpiEstimMarginalPredictive(w, Ct, Cgrid, windin=3)\n(m, med, l, u) = calculateResults(pC, Cgrid)\nmarginalised_coverage = mean((l[4:end] .&lt;= Ct[4:end]) .& (Ct[4:end] .&lt;= u[4:end]))\nplot!(plotCases, 4:length(m), m[4:end], ribbon=(m[4:end]-l[4:end], u[4:end]-m[4:end]), label=\"Marginalised\")\n\n# Also show the observed data\nscatter!(plotCases, 1:length(Ct), Ct, label=\"Observed\", color=:black, markersize=1.5)"
+  },
+  {
+    "objectID": "EpiEstim.html#predictive-coverage-and-scoring-rules",
+    "href": "EpiEstim.html#predictive-coverage-and-scoring-rules",
+    "title": "EpiEstim in Julia",
+    "section": "Predictive coverage and scoring rules",
+    "text": "Predictive coverage and scoring rules\nCalculating predictive coverage:\n\nprintln(\"Predictive coverage of default EpiEstim = $(round(100*default_coverage))%\")\nprintln(\"Predictive coverage of marginalised EpiEstim = $(round(100*marginalised_coverage))%\")\n\nPredictive coverage of default EpiEstim = 87.0%\nPredictive coverage of marginalised EpiEstim = 99.0%\n\n\nand the CRPS (lower is better) for each model:\n\ninclude(\"src/scoringRules.jl\")\ndefault_crps = CRPS(pCdefault, Ct, windin=3)\nmarginalised_crps = CRPS(cumsum(pC, dims=1), Cgrid, Ct, windin=3)\n\nprintln(\"CRPS of default EpiEstim = $(default_crps)\")\nprintln(\"CRPS of marginalised EpiEstim = $(marginalised_crps)\")\n\nCRPS of default EpiEstim = 9.748611012811024\nCRPS of marginalised EpiEstim = 5.577113951260321"
+  }
+]

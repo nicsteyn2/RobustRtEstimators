@@ -224,7 +224,7 @@ plt = plot_grid(plt_data_rw, plt_data_sinusoidal, plt_data_steps,
                 ncol=3, rel_heights = c(0.35,0.28,0.6,0.6), labels=c("A)", "B)", "C)", "D)", "E)", "F)", "G)", "H)", "I)", "J)", "K)", "L)"), label_y=1, label_x=-0.02) 
 plt
 ggsave(paste0("paper/figures/01example.png"), plt, dpi=300, width=25, height=21, units="cm")
-
+ggsave(paste0("paper/figures/01example.pdf"), plt, dpi=600, width=25, height=21, units="cm")
 
 # Get parameter posterior distributions
 df %>% filter(t==100, fit=="Marginalised", model=="EpiFilter") %>% select(simulation, mean_param ,lower_param, upper_param)

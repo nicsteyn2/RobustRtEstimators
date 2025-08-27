@@ -260,4 +260,5 @@ plt_sc_stats
 plt = plot_grid(plt_rw_stats, plt_sin_stats, plt_sc_stats, NULL, legend, NULL, rel_heights=c(1,0.2), ncol=3)
 plt
 ggsave("paper/figures/s5b_epidynamics.png", plt, width=25, height=18, dpi=300, units="cm")
+ggsave("paper/figures/s5b_epidynamics.pdf", plt, width=25, height=18, dpi=600, units="cm")
 

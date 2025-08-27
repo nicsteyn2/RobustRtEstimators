@@ -1,0 +1,46 @@
+---
+title: "Robust Rt estimation"
+---
+
+We provide simple Julia implementations of two popular methods for reproduction number estimation: EpiEstim [@coriNewFrameworkSoftware2013] and EpiFilter [@paragImprovedEstimationTimevarying2021]. In addition to the original methods, we also provide functions for calculating model likelihoods and marginalising out uncertainty about model parameters from final estimates of $R_t$. 
+
+These scripts were developed as part of *[Robust uncertainty quantification in popular estimators of the instantaneous reproduction number](https://doi.org/10.1101/2024.10.22.24315918)*. All technical details can be found in this paper and the corresponding supplementary material.
+
+While the paper above focuses on real-time estimation, we also provide a discussion and comparison of retrospective methods.
+
+```{julia}
+#| code-fold: true
+#| output: true
+#| fig-label: fig-example
+#| fig-cap: Reported cases from the first 100 days of the COVID-19 pandemic in Aotearoa New Zealand (upper) and the estimated reproduction number using EpiEstim with a default smoothing value of k = 7 (lower). Data were obtained from the [Ministry of Health](https://github.com/minhealthnz/nz-covid-data).
+using Plots, Measures
+
+# Ensure we are working in the root directory
+const rootdir = @__DIR__
+cd(joinpath(rootdir, ".."))
+
+# Load scripts
+include("src/EpiEstim.jl")
+include("src/support.jl")
+
+# Set k parameter and load data
+k = 7
+(Ct, w) = loadData("NZCOVID")
+dates = Date("2020-02-26") + Day.(0:99)
+
+# Run the model and extract mean and credible intervals
+pR = EpiEstim(k, w, Ct)
+m = mean.(pR)
+l = quantile.(pR, 0.025)
+u = quantile.(pR, 0.975)
+
+# Plot
+plot_cases = bar(dates, Ct, xlabel="Date", ylabel="Reported cases", label=false, size=(800, 400), margins=3mm, color="#f25a2a")
+plot_Rt = plot(dates, m, ribbon=(m-l,u-m), label=false, xlabel="Date", ylabel="Reproduction number", size=(800,400), margins=3mm, color="#13643f")
+hline!(plot_Rt, [1], label=false, color=:black, linestyle=:dash)
+plot(plot_cases, plot_Rt, layout=(2,1), size=(800,600))
+
+```
+
+
+Other than a [Julia installation](https://julialang.org), no external software is required to run this code. All functions are provided in the ``/src/`` directory of the [GitHub repository](https://github.com/nicsteyn2/RobustRtEstimators).

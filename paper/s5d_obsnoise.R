@@ -222,5 +222,6 @@ plt = plot_grid(plt_data_rw, plt_data_sinusoidal, plt_data_steps,
                 ncol=3, rel_heights = c(0.35,0.25,0.6,0.6)) 
 plt
 ggsave(paste0("paper/figures/s5d_obsnoise.png"), plt, dpi=300, width=25, height=21, units="cm")
-
+ggsave(paste0("paper/figures/s5d_obsnoise.pdf"), plt, dpi=600, width=25, height=21, units="cm")
+ 
 

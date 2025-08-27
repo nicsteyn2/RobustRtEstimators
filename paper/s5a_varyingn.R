@@ -7,7 +7,7 @@ library(cowplot)
 custom_theme <- theme_bw() +
   theme(
     axis.title = element_text(size=8),
-    axis.text = element_text(size=7.5),
+    axis.text = element_text(size=7),
     strip.background = element_blank(),
     strip.text = element_text(size=10),
     plot.title = element_text(hjust = 0.5),
@@ -157,8 +157,9 @@ plt_sin_scores = ggplot(df_scores %>% filter(simulation=="Sinusoidal"), aes(x=Tr
   scale_y_log10() + ylab("Relative CRPS") + xlab("Number of initial cases (log-scale)") +
   scale_x_log10(breaks=c(25, 50, 100, 200, 400, 800, 1600, 3200), 
                 labels=c(25, 50, 100, 200, 400, 800, 1600, 3200))
-
+ 
 plt_sin_stats = plot_grid(plt_sin_cov, plt_sin_params, plt_sin_scores, ncol=1, rel_heights = c(1.4,1,1.2))
 plt_sin_stats
 ggsave("paper/figures/s5a_varyingn.png", plt_sin_stats, width=12, height=15, dpi=300, units="cm")
+ggsave("paper/figures/s5a_varyingn.pdf", plt_sin_stats, width=12, height=15, dpi=600, units="cm")
 
