@@ -3,7 +3,7 @@ title: "Other methods"
 bibliography: bib.bib
 ---
 
-During work for *[Robust uncertainty quantification...](https://doi.org/10.1101/2024.10.22.24315918)*, we considered other methods. These were not included in the main text as they are retrospective rather than real-time (although they can be used for real-time analysis also). Preliminary results are included here.
+During work for *[Robust uncertainty quantification...](https://doi.org/10.1093/aje/kwaf165)*, we considered other methods. These were not included in the main text as they are retrospective rather than real-time (although they can be used for real-time analysis also). Preliminary results are included here.
 
 ::: {.callout-note}
 We view this page as a living document. We have largely stuck to default options when implementing the various methods. If you think something can be improved, or you think something important is missing, please [get in contact](mailto:nicholas.steyn@univ.ox.ac.uk)!
@@ -15,7 +15,7 @@ We view this page as a living document. We have largely stuck to default options
 - We present and implement novel methods for evaluating existing models on **observable data** (calibration and CRPS of reported cases).
 - EpiFilter (smoothing) generally performs the best, although this is partially due to matching assumptions about observation noise.
 - The uniform/flat prior distribution used for EpiFilter's smoothing parameter has a useful property: it ensures the MAP value is equal to the MLE. The predictive decomposition of the likelihood then ensures this is also the value that optimises one-step-ahead predictions. That is, using a flat prior distribution enforces a MAP that is optimal for one-step-ahead forecasting.
-- EpiLPS(MALA) outperforms EpiLPS(MAP), most likely due to the proper handling of uncertainty in smoothing parameters. This supports our argument in *[Robust uncertainty quantification...](https://doi.org/10.1101/2024.10.22.24315918)* that parameters should be marginalised out rather than fixed at some optimal value.
+- EpiLPS(MALA) outperforms EpiLPS(MAP), most likely due to the proper handling of uncertainty in smoothing parameters. This supports our argument in *[Robust uncertainty quantification...](https://doi.org/10.1093/aje/kwaf165)* that parameters should be marginalised out rather than fixed at some optimal value.
 
 
 
@@ -48,7 +48,7 @@ The **filtering posterior distribution** depends only on past data and is writte
 
 When producing estimates at the most recent time-step, only the filtering distribution is accessible, as future data are not yet available, whereas the smoothing distribution is generally preferred for retrospective analysis, as it incorporates all available data. Note that, at time $t = T$, the filtering and smoothing distributions are equivalent.
 
-In *[Robust uncertainty quantification in popular estimators of the instantaneous reproduction number](https://doi.org/10.1101/2024.10.22.24315918)*, we focus on methods for estimating $R_t$ in real-time. That is, we target the *filtering distribution* rather than the *smoothing distribution*[^1]. Here we consider the latter.
+In *[Robust uncertainty quantification in popular estimators of the instantaneous reproduction number](https://doi.org/10.1093/aje/kwaf165)*, we focus on methods for estimating $R_t$ in real-time. That is, we target the *filtering distribution* rather than the *smoothing distribution*[^1]. Here we consider the latter.
 
 [^1]: The "smoothing" in "smoothing distribution" has a different meaning to "smoothing" in "smoothing parameter".
 
@@ -61,7 +61,7 @@ In addition to the filtering distribution, EpiFilter also provides a method to f
 
 $$ P(R_t|C_{1:T}) = \int P(R_t | C_{1:T}, \eta) P(\eta | C_{1:T}) \ d\eta $$
 
-This requires the posterior distribution for $\eta$ once all data are collected: $P(\eta|C_{1:T})$. We introduce methodology for this in *[Robust uncertainty quantification...](https://doi.org/10.1101/2024.10.22.24315918)*.
+This requires the posterior distribution for $\eta$ once all data are collected: $P(\eta|C_{1:T})$. We introduce methodology for this in *[Robust uncertainty quantification...](https://doi.org/10.1093/aje/kwaf165)*.
 
 The posterior smoothing distribution for observed case incidence is found by marginalising over $R_t$ from the smoothing posterior distribution for $R_t$ (instead of the predictive distribution for $R_t$):
 
@@ -69,7 +69,7 @@ $$ P(\tilde{C}_t | C_{1:T}) = \int P(\tilde{C}_t | R_t, C_{1:T}) P(R_t | C_{1:T}
 
 For simplicity, we use the renewal model for $P(\tilde{C}_t | R_t, C_{1:T})$, even though this ignores future reported case incidence. That is, future case data $C_{t:T}$ only features in $P(\tilde{C}_t | C_{1:T})$ via $R_t$.
 
-CRPS is calculated using the methodology outlined in *[Robust uncertainty quantification...](https://doi.org/10.1101/2024.10.22.24315918)*.
+CRPS is calculated using the methodology outlined in *[Robust uncertainty quantification...](https://doi.org/10.1093/aje/kwaf165)*.
 
 
 

@@ -4,7 +4,7 @@ title: "Robust Rt estimation"
 
 We provide simple Julia implementations of two popular methods for reproduction number estimation: EpiEstim [@coriNewFrameworkSoftware2013] and EpiFilter [@paragImprovedEstimationTimevarying2021]. In addition to the original methods, we also provide functions for calculating model likelihoods and marginalising out uncertainty about model parameters from final estimates of $R_t$. 
 
-These scripts were developed as part of *[Robust uncertainty quantification in popular estimators of the instantaneous reproduction number](https://doi.org/10.1101/2024.10.22.24315918)*. All technical details can be found in this paper and the corresponding supplementary material.
+These scripts were developed as part of *[Robust uncertainty quantification in popular estimators of the instantaneous reproduction number](https://doi.org/10.1093/aje/kwaf165)*. All technical details can be found in this paper and the corresponding supplementary material.
 
 While the paper above focuses on real-time estimation, we also provide a discussion and comparison of retrospective methods.
 

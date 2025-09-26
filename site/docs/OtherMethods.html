@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -55,10 +55,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -214,7 +214,7 @@ window.Quarto = {
 </header>
 
 
-<p>During work for <em><a href="https://doi.org/10.1101/2024.10.22.24315918">Robust uncertainty quantification…</a></em>, we considered other methods. These were not included in the main text as they are retrospective rather than real-time (although they can be used for real-time analysis also). Preliminary results are included here.</p>
+<p>During work for <em><a href="https://doi.org/10.1093/aje/kwaf165">Robust uncertainty quantification…</a></em>, we considered other methods. These were not included in the main text as they are retrospective rather than real-time (although they can be used for real-time analysis also). Preliminary results are included here.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -234,7 +234,7 @@ Note
 <li>We present and implement novel methods for evaluating existing models on <strong>observable data</strong> (calibration and CRPS of reported cases).</li>
 <li>EpiFilter (smoothing) generally performs the best, although this is partially due to matching assumptions about observation noise.</li>
 <li>The uniform/flat prior distribution used for EpiFilter’s smoothing parameter has a useful property: it ensures the MAP value is equal to the MLE. The predictive decomposition of the likelihood then ensures this is also the value that optimises one-step-ahead predictions. That is, using a flat prior distribution enforces a MAP that is optimal for one-step-ahead forecasting.</li>
-<li>EpiLPS(MALA) outperforms EpiLPS(MAP), most likely due to the proper handling of uncertainty in smoothing parameters. This supports our argument in <em><a href="https://doi.org/10.1101/2024.10.22.24315918">Robust uncertainty quantification…</a></em> that parameters should be marginalised out rather than fixed at some optimal value.</li>
+<li>EpiLPS(MALA) outperforms EpiLPS(MAP), most likely due to the proper handling of uncertainty in smoothing parameters. This supports our argument in <em><a href="https://doi.org/10.1093/aje/kwaf165">Robust uncertainty quantification…</a></em> that parameters should be marginalised out rather than fixed at some optimal value.</li>
 </ul>
 </section>
 <section id="background" class="level1">
@@ -256,7 +256,7 @@ Note
 <h3 class="anchored" data-anchor-id="filtering-versus-smoothing">Filtering versus smoothing</h3>
 <p>The <strong>filtering posterior distribution</strong> depends only on past data and is written <span class="math inline">\(P(R_t | C_{1:t})\)</span>, whereas the <strong>smoothing posterior distribution</strong> depends on all data and is written <span class="math inline">\(P(R_t | C_{1:T})\)</span> <span class="citation" data-cites="sarkkaBayesianFilteringSmoothing2013">(<a href="#ref-sarkkaBayesianFilteringSmoothing2013" role="doc-biblioref">Särkkä 2013</a>)</span>.</p>
 <p>When producing estimates at the most recent time-step, only the filtering distribution is accessible, as future data are not yet available, whereas the smoothing distribution is generally preferred for retrospective analysis, as it incorporates all available data. Note that, at time <span class="math inline">\(t = T\)</span>, the filtering and smoothing distributions are equivalent.</p>
-<p>In <em><a href="https://doi.org/10.1101/2024.10.22.24315918">Robust uncertainty quantification in popular estimators of the instantaneous reproduction number</a></em>, we focus on methods for estimating <span class="math inline">\(R_t\)</span> in real-time. That is, we target the <em>filtering distribution</em> rather than the <em>smoothing distribution</em><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Here we consider the latter.</p>
+<p>In <em><a href="https://doi.org/10.1093/aje/kwaf165">Robust uncertainty quantification in popular estimators of the instantaneous reproduction number</a></em>, we focus on methods for estimating <span class="math inline">\(R_t\)</span> in real-time. That is, we target the <em>filtering distribution</em> rather than the <em>smoothing distribution</em><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Here we consider the latter.</p>
 </section>
 </section>
 <section id="methods" class="level1">
@@ -265,11 +265,11 @@ Note
 <h2 class="anchored" data-anchor-id="epifilter-smoothing-version">EpiFilter (smoothing version)</h2>
 <p>In addition to the filtering distribution, EpiFilter also provides a method to find the smoothing distribution, conditional on smoothing parameter <span class="math inline">\(\eta\)</span>. Using the same arguments as for filtering, we marginalise over <span class="math inline">\(\eta\)</span> to find the marginal smoothing distribution:</p>
 <p><span class="math display">\[ P(R_t|C_{1:T}) = \int P(R_t | C_{1:T}, \eta) P(\eta | C_{1:T}) \ d\eta \]</span></p>
-<p>This requires the posterior distribution for <span class="math inline">\(\eta\)</span> once all data are collected: <span class="math inline">\(P(\eta|C_{1:T})\)</span>. We introduce methodology for this in <em><a href="https://doi.org/10.1101/2024.10.22.24315918">Robust uncertainty quantification…</a></em>.</p>
+<p>This requires the posterior distribution for <span class="math inline">\(\eta\)</span> once all data are collected: <span class="math inline">\(P(\eta|C_{1:T})\)</span>. We introduce methodology for this in <em><a href="https://doi.org/10.1093/aje/kwaf165">Robust uncertainty quantification…</a></em>.</p>
 <p>The posterior smoothing distribution for observed case incidence is found by marginalising over <span class="math inline">\(R_t\)</span> from the smoothing posterior distribution for <span class="math inline">\(R_t\)</span> (instead of the predictive distribution for <span class="math inline">\(R_t\)</span>):</p>
 <p><span class="math display">\[ P(\tilde{C}_t | C_{1:T}) = \int P(\tilde{C}_t | R_t, C_{1:T}) P(R_t | C_{1:T}) \ dR_t \]</span></p>
 <p>For simplicity, we use the renewal model for <span class="math inline">\(P(\tilde{C}_t | R_t, C_{1:T})\)</span>, even though this ignores future reported case incidence. That is, future case data <span class="math inline">\(C_{t:T}\)</span> only features in <span class="math inline">\(P(\tilde{C}_t | C_{1:T})\)</span> via <span class="math inline">\(R_t\)</span>.</p>
-<p>CRPS is calculated using the methodology outlined in <em><a href="https://doi.org/10.1101/2024.10.22.24315918">Robust uncertainty quantification…</a></em>.</p>
+<p>CRPS is calculated using the methodology outlined in <em><a href="https://doi.org/10.1093/aje/kwaf165">Robust uncertainty quantification…</a></em>.</p>
 </section>
 <section id="epinow2" class="level2">
 <h2 class="anchored" data-anchor-id="epinow2">EpiNow2</h2>
@@ -489,8 +489,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -601,7 +599,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

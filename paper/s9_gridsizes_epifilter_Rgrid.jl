@@ -106,4 +106,5 @@ plotCmarg = plot!(plotCmarg, (windin+1):100, mC[(windin+1):100], ribbon=(mC[(win
 
 # Make the giant plot
 plt = plot(plotEtaOverTime, plotEtaFinal, plotRcond, plotRmarg, plotCcond, plotCmarg, layout=(3, 2), size=(800, 700), dpi=300, margin=3mm)
-png("paper/figures/s9_gridsize_epifilter_Rgrid.png")
+# png("paper/figures/s9_gridsize_epifilter_Rgrid.png")
+savefig(plt, "paper/figures/s9_gridsize_epifilter_Rgrid.pdf")

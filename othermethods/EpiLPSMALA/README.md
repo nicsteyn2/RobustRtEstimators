@@ -5,7 +5,7 @@ Simple worked example fitting the MALA version of [EpiLPS](https://journals.plos
 
 In addition to producing posterior means and credible intervals of $R_t$, we also provide methods to find the smoothing predictive distribution for reported cases $C_t$, as well as an estimator of the CRPS for this smoothing predictive distribution.
 
-Full methods are included in the supplementary material of [our paper](#TODO) and on the [corresponding website](#TODO).
+Full methods are included in the supplementary material of [our paper](https://doi.org/10.1093/aje/kwaf165).
 
 This folder contains the following files:
 

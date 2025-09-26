@@ -43,4 +43,4 @@ APE = [EpiEstimAPE(k, w, Ct) for k in kvals]
 p = plot(xlabel="k", ylabel="Value of metric", dpi=300, size=(600,300), margin=3mm, minorgrid=true)
 plot!(p, kvals, APE, label="APE metric", marker=:circle)
 plot!(p, kvals, -1 * loglik[:,end], label="Negative log-likelihood", marker=:circle, legend=:bottomright)
-png(p, "paper/figures/s8_APEestim.png")
+savefig(p, "paper/figures/s8_APEestim.pdf")

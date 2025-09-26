@@ -1,7 +1,7 @@
 
 # Robust uncertainty quantification in popular estimators of the instantaneous reproduction number
 
-This repository contains the code and data for the paper "*Robust uncertainty quantification in popular estimators of the instantaneous reproduction number*".
+This repository contains the code and data for the paper "*[Robust uncertainty quantification in popular estimators of the instantaneous reproduction number](https://doi.org/10.1093/aje/kwaf165)*".
 
 All source code is written in Julia. Example code in the form of Jupyter notebooks is also provided. Finally, R scripts are used to generate the figures in the paper.
 

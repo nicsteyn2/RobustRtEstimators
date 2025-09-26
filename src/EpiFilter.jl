@@ -174,7 +174,6 @@ function EpiFilterConditionalPredictive(η, w, C, Rgrid, Cgrid)
     
     # Calculate the predictive distribution over Cgrid
     pC[:,1] .= 1/length(pC[:,1])
-    #TODO: Add a version for non-UnitRange Cgrid
     for tt = 2:length(C)
         λt = Rgrid .* Λ[tt]
         # pC[:,tt] = [sum(fastPoissonPDF(Ct, λt) .* pRup[:,tt]) for Ct in Cgrid]

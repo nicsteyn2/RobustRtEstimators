@@ -323,5 +323,5 @@ rtestim_plt
 
 plt = plot_grid(EpiFilterSmoothed_plt, rtestim_plt, EpiLPS_plt, EpiLPSMALA_plt, EpiNow2_plt, EpiNow2_plt_invgam, ncol=2, align="v")
 plt
-ggsave("othermethods/results/othermethods.png", plt, dpi=300, units="cm", width=30, height=30)
- 
+# ggsave("othermethods/results/othermethods.png", plt, dpi=300, units="cm", width=30, height=30)
+ggsave("othermethods/results/othermethods.pdf", plt, dpi=300, units="cm", width=30, height=30)

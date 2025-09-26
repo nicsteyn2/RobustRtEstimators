@@ -21,7 +21,7 @@ df_eepost = read.csv("paper/outputs/s6b_otherdatasets_epiestimposteriors.csv")
 df_efpost = read.csv("paper/outputs/s6b_otherdatasets_epifilterposteriors.csv")
 
 # Set current simulation to plot
-CURRENT_SIM = "sarsfilt"
+CURRENT_SIM = "flufilt"
 labels = c("flufilt"="1918 Influenza (moving average)", "flu"="1918 Influenza", "sars"="2003 SARS", "sarsfilt"="2003 SARS (moving average)")
 
 # Clean the data
@@ -109,6 +109,7 @@ plt = plot_grid(plot_grid(plt_data_rw, plt_param_rw, ncol=1, rel_heights=c(1, 0.
                 plt_predpost_rw,
                 ncol=3) 
 plt
-ggsave(paste0("paper/figures/s6b_", CURRENT_SIM, ".png"), plt, dpi=300, width=25, height=8, units="cm")
+# ggsave(paste0("paper/figures/s6b_", CURRENT_SIM, ".png"), plt, dpi=300, width=25, height=8, units="cm")
+ggsave(paste0("paper/figures/s6b_", CURRENT_SIM, ".pdf"), plt, dpi=300, width=25, height=8, units="cm")
 
 

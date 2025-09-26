@@ -50,4 +50,5 @@ plot!(plotR2, (windin+1):100, mR[(windin+1):100], ribbon=(mR[(windin+1):100]-lR[
 plot!(plotR2, 1:100, Rt, label="True Rt", linestyle=:dash, color=:black)
 
 plt = plot(plotR, plotR2, layout=(2, 1), size=(800, 500), dpi=300, margin=3mm)
-png("paper/figures/s9_gridsize_epiestim.png")
+# png("paper/figures/s9_gridsize_epiestim.png")
+savefig(plt, "paper/figures/s9_gridsize_epiestim.pdf")
